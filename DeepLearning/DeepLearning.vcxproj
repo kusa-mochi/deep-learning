@@ -135,7 +135,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CNeuron.h" />
+    <ClInclude Include="MultilayerPerceptron.h" />
     <ClInclude Include="DeepLearning.h" />
     <ClInclude Include="Eigen\src\Cholesky\LDLT.h" />
     <ClInclude Include="Eigen\src\Cholesky\LLT.h" />
@@ -413,7 +413,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
-    <ClCompile Include="CNeuron.cpp" />
+    <ClCompile Include="MultilayerPerceptron.cpp" />
     <ClCompile Include="DeepLearning.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

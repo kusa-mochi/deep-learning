@@ -24,9 +24,6 @@
     <ClInclude Include="Resource.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="CNeuron.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Eigen\src\Cholesky\LDLT.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -840,6 +837,9 @@
     <ClInclude Include="Eigen\src\UmfPackSupport\UmfPackSupport.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="MultilayerPerceptron.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DeepLearning.cpp">
@@ -851,7 +851,7 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="CNeuron.cpp">
+    <ClCompile Include="MultilayerPerceptron.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
