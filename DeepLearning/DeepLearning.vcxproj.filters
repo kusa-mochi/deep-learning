@@ -837,9 +837,6 @@
     <ClInclude Include="Eigen\src\UmfPackSupport\UmfPackSupport.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="MultilayerPerceptron.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DeepLearning.cpp">
@@ -849,9 +846,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="MultilayerPerceptron.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -864,39 +858,5 @@
     <Image Include="app.ico">
       <Filter>リソース ファイル</Filter>
     </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Eigen\Cholesky" />
-    <None Include="Eigen\CholmodSupport" />
-    <None Include="Eigen\Core" />
-    <None Include="Eigen\Dense" />
-    <None Include="Eigen\Eigen" />
-    <None Include="Eigen\Eigenvalues" />
-    <None Include="Eigen\Geometry" />
-    <None Include="Eigen\Householder" />
-    <None Include="Eigen\IterativeLinearSolvers" />
-    <None Include="Eigen\Jacobi" />
-    <None Include="Eigen\LU" />
-    <None Include="Eigen\MetisSupport" />
-    <None Include="Eigen\OrderingMethods" />
-    <None Include="Eigen\PardisoSupport" />
-    <None Include="Eigen\PaStiXSupport" />
-    <None Include="Eigen\QR" />
-    <None Include="Eigen\QtAlignedMalloc" />
-    <None Include="Eigen\Sparse" />
-    <None Include="Eigen\SparseCholesky" />
-    <None Include="Eigen\SparseCore" />
-    <None Include="Eigen\SparseLU" />
-    <None Include="Eigen\SparseQR" />
-    <None Include="Eigen\SPQRSupport" />
-    <None Include="Eigen\StdDeque" />
-    <None Include="Eigen\StdList" />
-    <None Include="Eigen\StdVector" />
-    <None Include="Eigen\SuperLUSupport" />
-    <None Include="Eigen\SVD" />
-    <None Include="Eigen\UmfPackSupport" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Eigen\CMakeLists.txt" />
   </ItemGroup>
 </Project>

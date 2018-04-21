@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{688A954E-C6AA-422A-9F59-38A818BC5DF7}</ProjectGuid>
+    <ProjectGuid>{147E6BF6-2F56-445D-9A0A-72CC3A5CE42A}</ProjectGuid>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <Keyword>ManagedCProj</Keyword>
     <RootNamespace>DeepLearning</RootNamespace>
@@ -73,10 +73,10 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -85,25 +85,23 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-    </ClCompile>
-    <Link>
-      <AdditionalDependencies />
-    </Link>
-  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <OpenMPSupport>true</OpenMPSupport>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies />
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
       <AdditionalDependencies />
@@ -135,7 +133,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MultilayerPerceptron.h" />
     <ClInclude Include="DeepLearning.h" />
     <ClInclude Include="Eigen\src\Cholesky\LDLT.h" />
     <ClInclude Include="Eigen\src\Cholesky\LLT.h" />
@@ -413,11 +410,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
-    <ClCompile Include="MultilayerPerceptron.cpp" />
     <ClCompile Include="DeepLearning.cpp" />
     <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
@@ -429,38 +425,9 @@
     <Image Include="app.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Eigen\Cholesky" />
-    <None Include="Eigen\CholmodSupport" />
-    <None Include="Eigen\Core" />
-    <None Include="Eigen\Dense" />
-    <None Include="Eigen\Eigen" />
-    <None Include="Eigen\Eigenvalues" />
-    <None Include="Eigen\Geometry" />
-    <None Include="Eigen\Householder" />
-    <None Include="Eigen\IterativeLinearSolvers" />
-    <None Include="Eigen\Jacobi" />
-    <None Include="Eigen\LU" />
-    <None Include="Eigen\MetisSupport" />
-    <None Include="Eigen\OrderingMethods" />
-    <None Include="Eigen\PardisoSupport" />
-    <None Include="Eigen\PaStiXSupport" />
-    <None Include="Eigen\QR" />
-    <None Include="Eigen\QtAlignedMalloc" />
-    <None Include="Eigen\Sparse" />
-    <None Include="Eigen\SparseCholesky" />
-    <None Include="Eigen\SparseCore" />
-    <None Include="Eigen\SparseLU" />
-    <None Include="Eigen\SparseQR" />
-    <None Include="Eigen\SPQRSupport" />
-    <None Include="Eigen\StdDeque" />
-    <None Include="Eigen\StdList" />
-    <None Include="Eigen\StdVector" />
-    <None Include="Eigen\SuperLUSupport" />
-    <None Include="Eigen\SVD" />
-    <None Include="Eigen\UmfPackSupport" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Eigen\CMakeLists.txt" />
+    <ProjectReference Include="..\DeepLearningCore\DeepLearningCore.vcxproj">
+      <Project>{688a954e-c6aa-422a-9f59-38a818bc5df7}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
