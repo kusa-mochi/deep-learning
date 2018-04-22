@@ -13,6 +13,7 @@ typedef double WEIGHT_TYPE;
 #define FUNCTION_NONE 0
 #define FUNCTION_SIGMOID 1
 #define FUNCTION_RELU 2
+#define FUNCTION_SOFTMAX 3
 
 #ifdef EXPORTING_
 #define EIGEN_NO_DEBUG		// コード内のassertを無効化．

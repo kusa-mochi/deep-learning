@@ -68,6 +68,8 @@ namespace DeepLearningCore
 		case FUNCTION_RELU:
 			_OutputActivationFunction = &ReLU;
 			break;
+		case FUNCTION_SOFTMAX:
+			_OutputActivationFunction = NULL;
 		default:
 			break;
 		}
@@ -103,7 +105,15 @@ namespace DeepLearningCore
 		tmpMatrix = (inputMatrix * _weight[0]).unaryExpr(_ActivationFunction);
 		for (int iLayer = 1; iLayer < _numLayer - 1; iLayer++)
 			tmpMatrix = (tmpMatrix * _weight[iLayer]).unaryExpr(_ActivationFunction);
-		MatrixXX outputMatrix = (tmpMatrix * _weight[_numLayer - 1]).unaryExpr(_OutputActivationFunction);
+		MatrixXX outputMatrix;
+		if (_OutputActivationFunction == NULL)
+		{
+			// TODO: Apply Softmax function
+		}
+		else
+		{
+			outputMatrix = (tmpMatrix * _weight[_numLayer - 1]).unaryExpr(_OutputActivationFunction);
+		}
 		output = this->Matrix2Pointer(outputMatrix);
 	}
 
