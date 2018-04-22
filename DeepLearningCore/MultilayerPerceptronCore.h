@@ -35,7 +35,7 @@ namespace DeepLearningCore
 			int numLayer,					// 層数
 			int* numNeuron,					// 各層のニューロンの数
 			int activationFunctionType,		// 中間層の活性化関数の種類
-			int outputActivationFunction	// 出力層の活性化関数
+			int outputActivationFunctionType	// 出力層の活性化関数
 		);
 		virtual ~MultiLayerPerceptronCore();
 		void Predict(WEIGHT_TYPE** input, int numData, WEIGHT_TYPE** output);

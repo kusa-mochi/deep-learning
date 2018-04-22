@@ -19,12 +19,41 @@ namespace DeepLearning
 		int* numNeuronPointer = new int[numNeuron->Length];
 		for (int i = 0; i < numNeuron->Length; i++) numNeuronPointer[i] = numNeuron[i];
 
+		int activationFunctionInt = -1;
+		int outputActivationFunctionInt = -1;
+
+		switch (activationFunctionType)
+		{
+		case ActivationFunctionType::Sigmoid:
+			activationFunctionInt = FUNCTION_SIGMOID;
+			break;
+		case ActivationFunctionType::ReLU:
+			activationFunctionInt = FUNCTION_RELU;
+			break;
+		}
+
+		switch (outputActivationFunctionType)
+		{
+		case OutputActivationFunctionType::None:
+			outputActivationFunctionInt = FUNCTION_NONE;
+			break;
+		case OutputActivationFunctionType::SoftMax:
+			outputActivationFunctionInt = FUNCTION_SOFTMAX;
+			break;
+		case OutputActivationFunctionType::Sigmoid:
+			outputActivationFunctionInt = FUNCTION_SIGMOID;
+			break;
+		case OutputActivationFunctionType::ReLU:
+			outputActivationFunctionInt = FUNCTION_RELU;
+			break;
+		}
+
 		_multiPerceptronCore = new MultiLayerPerceptronCore(
 			numInput,
 			numNeuron->Length,
 			numNeuronPointer,
-			FUNCTION_SIGMOID,	// TODO: コンストラクタの入力により値を決定する。
-			FUNCTION_NONE		// TODO: コンストラクタの入力により値を決定する。
+			activationFunctionInt,
+			outputActivationFunctionInt
 		);
 	}
 

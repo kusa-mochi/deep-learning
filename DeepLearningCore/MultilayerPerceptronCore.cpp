@@ -24,14 +24,14 @@ namespace DeepLearningCore
 		int numLayer,
 		int* numNeuron,
 		int activationFunctionType,
-		int outputActivationFunction
+		int outputActivationFunctionType
 	)
 	{
 		if (
 			numInput < 1 ||
 			numLayer < 2 ||
 			activationFunctionType < 0 ||
-			outputActivationFunction < 0
+			outputActivationFunctionType < 0
 			)
 		{
 			throw ARGUMENT_EXCEPTION;
@@ -57,7 +57,7 @@ namespace DeepLearningCore
 			break;
 		}
 
-		switch (outputActivationFunction)
+		switch (outputActivationFunctionType)
 		{
 		case FUNCTION_NONE:
 			_OutputActivationFunction = &Through;
