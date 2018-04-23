@@ -4,11 +4,6 @@
 
 namespace DeepLearning
 {
-	WEIGHT_TYPE Sigmoid(WEIGHT_TYPE x)
-	{
-		return (1.0 / (1.0 + std::exp(x)));
-	}
-
 	MultiLayerPerceptron::MultiLayerPerceptron(
 		int numInput,											// 入力の次元数
 		cli::array<int>^ numNeuron,								// 各層のニューロンの数
@@ -16,6 +11,9 @@ namespace DeepLearning
 		OutputActivationFunctionType outputActivationFunctionType		// 出力層の活性化関数
 	)
 	{
+		if (numInput < 1) throw gcnew System::ArgumentOutOfRangeException("numInput");
+		if (numNeuron == nullptr) throw gcnew System::ArgumentNullException("numNeuron");
+
 		int* numNeuronPointer = new int[numNeuron->Length];
 		for (int i = 0; i < numNeuron->Length; i++) numNeuronPointer[i] = numNeuron[i];
 
@@ -48,7 +46,7 @@ namespace DeepLearning
 			break;
 		}
 
-		_multiPerceptronCore = new MultiLayerPerceptronCore(
+		_multiLayerPerceptronCore = new MultiLayerPerceptronCore(
 			numInput,
 			numNeuron->Length,
 			numNeuronPointer,
@@ -62,8 +60,56 @@ namespace DeepLearning
 	{
 	}
 
-	cli::array<WEIGHT_TYPE, 2>^ MultiLayerPerceptron::Predict(cli::array<WEIGHT_TYPE, 2>^ input, cli::array<WEIGHT_TYPE, 2>^ output)
+	cli::array<WEIGHT_TYPE, 2>^ MultiLayerPerceptron::Predict(cli::array<WEIGHT_TYPE, 2>^ input)
 	{
-		return nullptr;	// TODO
+		if (input == nullptr) throw gcnew System::ArgumentNullException("input");
+
+		WEIGHT_TYPE** coreInput = NULL;
+		WEIGHT_TYPE** coreOutput = NULL;
+		int inputRows = input->GetLength(0);
+
+		this->ManagedArray2NativeArray(input, coreInput);
+
+		_multiLayerPerceptronCore->Predict(coreInput, inputRows, coreOutput);
+
+		return this->NativeArray2ManagedArray(
+			coreOutput,
+			inputRows,
+			_multiLayerPerceptronCore->GetNumOutput()
+		);
+	}
+
+	void MultiLayerPerceptron::ManagedArray2NativeArray(cli::array<WEIGHT_TYPE, 2>^ input, WEIGHT_TYPE** output)
+	{
+		int inputRows = input->GetLength(0);
+		int inputCols = input->GetLength(1);
+
+		output = new WEIGHT_TYPE*[inputRows];
+		for (int i = 0; i < inputRows; i++)
+		{
+			output[i] = new WEIGHT_TYPE[inputCols];
+			for (int j = 0; j < inputCols; j++)
+			{
+				output[i][j] = input[i, j];
+			}
+		}
+	}
+
+	cli::array<WEIGHT_TYPE, 2>^ MultiLayerPerceptron::NativeArray2ManagedArray(WEIGHT_TYPE** input, int rows, int cols)
+	{
+		cli::array<WEIGHT_TYPE, 2>^ output = gcnew cli::array<WEIGHT_TYPE, 2>(
+			rows,
+			_multiLayerPerceptronCore->GetNumOutput()
+			);
+
+		for (int i = 0; i < rows; i++)
+		{
+			for (int j = 0; j < cols; j++)
+			{
+				output[i, j] = input[i][j];
+			}
+		}
+
+		return output;
 	}
 }

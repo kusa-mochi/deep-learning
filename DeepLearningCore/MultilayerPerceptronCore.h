@@ -38,21 +38,25 @@ namespace DeepLearningCore
 			int outputActivationFunctionType	// 出力層の活性化関数
 		);
 		virtual ~MultiLayerPerceptronCore();
+		int GetNumLayer()
+		{
+			return _numLayer;
+		}
+		int GetNumInput()
+		{
+			return _numInput;
+		}
+		int GetNumOutput()
+		{
+			return _numNeuron[_numLayer - 1];
+		}
 		void Predict(WEIGHT_TYPE** input, int numData, WEIGHT_TYPE** output);
-		//// クラス外から呼び出せるフレンド関数を定義
-		//friend MultiLayerPerceptronCore* CreateInstance(
-		//	int numInput,											// 入力の次元数
-		//	int numLayer,											// 層数
-		//	int* numNeuron,											// 各層のニューロンの数
-		//	WEIGHT_TYPE(*ActivationFunction)(WEIGHT_TYPE),			// 中間層の活性化関数
-		//	WEIGHT_TYPE(*OutputActivationFunction)(WEIGHT_TYPE)		// 出力層の活性化関数
-		//);
-		//friend void ReleseInstance(MultiLayerPerceptronCore* p);
-#ifdef EXPORTING_
 	private:
 		int _numLayer = 0;
 		int _numInput = 0;
 		int* _numNeuron;
+#ifdef EXPORTING_
+	private:
 		WEIGHT_TYPE(*_ActivationFunction)(WEIGHT_TYPE) = NULL;
 		WEIGHT_TYPE(*_OutputActivationFunction)(WEIGHT_TYPE) = NULL;
 		MatrixXX* _weight;

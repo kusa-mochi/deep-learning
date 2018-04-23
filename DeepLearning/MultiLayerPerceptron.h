@@ -7,7 +7,7 @@ using namespace DeepLearningCore;
 
 namespace DeepLearning
 {
-	ref class MultiLayerPerceptron
+	public ref class MultiLayerPerceptron
 	{
 	public:
 		MultiLayerPerceptron(
@@ -18,10 +18,12 @@ namespace DeepLearning
 		);
 		virtual ~MultiLayerPerceptron();
 		cli::array<WEIGHT_TYPE, 2>^ Predict(
-			cli::array<WEIGHT_TYPE, 2>^ input,
-			cli::array<WEIGHT_TYPE, 2>^ output
+			cli::array<WEIGHT_TYPE, 2>^ input
 		);
 	private:
-		MultiLayerPerceptronCore* _multiPerceptronCore = NULL;
+		int _numInput = 0;
+		MultiLayerPerceptronCore * _multiLayerPerceptronCore = NULL;
+		void ManagedArray2NativeArray(cli::array<WEIGHT_TYPE, 2>^ input, WEIGHT_TYPE** output);
+		cli::array<WEIGHT_TYPE, 2>^ NativeArray2ManagedArray(WEIGHT_TYPE** input, int rows, int cols);
 	};
 }
