@@ -60,6 +60,42 @@ namespace DeepLearning
 	{
 	}
 
+	void MultiLayerPerceptron::SetWeights(cli::array<WEIGHT_TYPE, 3>^ weights)
+	{
+		if (weights == nullptr) throw gcnew System::ArgumentNullException("weights");
+
+		int length0 = weights->GetLength(0);
+		int length1 = weights->GetLength(1);
+		int length2 = weights->GetLength(2);
+		WEIGHT_TYPE*** weightsPointer = NULL;
+
+		weightsPointer = new WEIGHT_TYPE**[length0];
+		for (int i = 0; i < length0; i++)
+		{
+			weightsPointer[i] = new WEIGHT_TYPE*[length1];
+			for (int j = 0; j < length1; j++)
+			{
+				weightsPointer[i][j] = new WEIGHT_TYPE[length2];
+				for (int k = 0; k < length2; k++)
+				{
+					weightsPointer[i][j][k] = weights[i, j, k];
+				}
+			}
+		}
+
+		_multiLayerPerceptronCore->SetWeights(weightsPointer);
+
+		for (int i = 0; i < length0; i++)
+		{
+			for (int j = 0; j < length1; j++)
+			{
+				delete[] weightsPointer[i][j];
+			}
+			delete[] weightsPointer[i];
+		}
+		delete[] weightsPointer;
+	}
+
 	cli::array<WEIGHT_TYPE, 2>^ MultiLayerPerceptron::Predict(cli::array<WEIGHT_TYPE, 2>^ input)
 	{
 		if (input == nullptr) throw gcnew System::ArgumentNullException("input");
@@ -72,11 +108,25 @@ namespace DeepLearning
 
 		_multiLayerPerceptronCore->Predict(coreInput, inputRows, coreOutput);
 
-		return this->NativeArray2ManagedArray(
+		for (int i = 0; i < input->GetLength(0); i++)
+		{
+			delete[] coreInput[i];
+		}
+		delete[] coreInput;
+
+		cli::array<WEIGHT_TYPE, 2>^ output = this->NativeArray2ManagedArray(
 			coreOutput,
 			inputRows,
 			_multiLayerPerceptronCore->GetNumOutput()
 		);
+
+		for (int i = 0; i < output->GetLength(0); i++)
+		{
+			delete[] coreOutput[i];
+		}
+		delete[] coreOutput;
+
+		return output;
 	}
 
 	void MultiLayerPerceptron::ManagedArray2NativeArray(cli::array<WEIGHT_TYPE, 2>^ input, WEIGHT_TYPE** output)

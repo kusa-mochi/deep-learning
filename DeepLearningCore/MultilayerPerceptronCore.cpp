@@ -94,6 +94,30 @@ namespace DeepLearningCore
 	}
 
 
+	void MultiLayerPerceptronCore::SetWeights(WEIGHT_TYPE*** weights)
+	{
+		if (weights == NULL) { throw ARGUMENT_NULL_EXCEPTION; }
+
+		for (int iNeuron = 0; iNeuron < _numNeuron[0]; iNeuron++)
+		{
+			for (int iInput = 0; iInput < _numInput; iInput++)
+			{
+				_weight[0](iInput, iNeuron) = weights[0][iInput][iNeuron];
+			}
+		}
+		for (int iLayer = 1; iLayer < _numLayer; iLayer++)
+		{
+			for (int iNeuron = 0; iNeuron < _numNeuron[iLayer]; iNeuron++)
+			{
+				for (int iInput = 0; iInput < _numNeuron[iLayer - 1]; iInput++)
+				{
+					_weight[iLayer](iInput, iNeuron) = weights[iLayer][iInput][iNeuron];
+				}
+			}
+		}
+	}
+
+
 	void MultiLayerPerceptronCore::Predict(WEIGHT_TYPE** input, int numData, WEIGHT_TYPE** output)
 	{
 		if (input == NULL) { throw ARGUMENT_NULL_EXCEPTION; }

@@ -50,6 +50,7 @@ namespace DeepLearningCore
 		{
 			return _numNeuron[_numLayer - 1];
 		}
+		void SetWeights(WEIGHT_TYPE*** weights);
 		void Predict(WEIGHT_TYPE** input, int numData, WEIGHT_TYPE** output);
 	private:
 		int _numLayer = 0;

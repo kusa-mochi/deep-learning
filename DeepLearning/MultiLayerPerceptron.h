@@ -17,6 +17,9 @@ namespace DeepLearning
 			OutputActivationFunctionType outputActivationFunctionType	// o—Í‘w‚ÌŠˆ«‰»ŠÖ”
 		);
 		virtual ~MultiLayerPerceptron();
+		void SetWeights(
+			cli::array<WEIGHT_TYPE, 3>^ weights
+		);
 		cli::array<WEIGHT_TYPE, 2>^ Predict(
 			cli::array<WEIGHT_TYPE, 2>^ input
 		);
