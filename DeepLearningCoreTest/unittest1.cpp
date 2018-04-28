@@ -1,0 +1,37 @@
+#include "stdafx.h"
+#include "CppUnitTest.h"
+#include "MultiLayerPerceptronCore.h"
+
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+using namespace DeepLearningCore;
+
+namespace DeepLearningCoreTest
+{
+	TEST_CLASS(MultiLayerPerceptronCoreTest)
+	{
+	public:
+
+		TEST_METHOD(SmallCaseTest)
+		{
+			Logger::WriteMessage("Begin SmallCaseTest");
+
+			int* numNeuron = new int[3]{ 3,2,2 };
+			MultiLayerPerceptronCore* p = new MultiLayerPerceptronCore(
+				2,
+				3,
+				numNeuron,
+				FUNCTION_SIGMOID,
+				FUNCTION_NONE
+			);
+
+			delete[] numNeuron;
+			numNeuron = NULL;
+			delete p;
+			p = NULL;
+
+			Assert::AreEqual(1, 1);
+			Logger::WriteMessage("End SmallCaseTest");
+		}
+
+	};
+}

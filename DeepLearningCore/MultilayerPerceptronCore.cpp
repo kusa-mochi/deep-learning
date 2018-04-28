@@ -27,68 +27,75 @@ namespace DeepLearningCore
 		int outputActivationFunctionType
 	)
 	{
-		assert(numInput >= 1);
-		assert(numLayer >= 2);
-		assert(activationFunctionType >= 0);
-		assert(outputActivationFunctionType >= 0);
-		if (
-			numInput < 1 ||
-			numLayer < 2 ||
-			activationFunctionType < 0 ||
-			outputActivationFunctionType < 0
-			)
-		{
-			throw ARGUMENT_EXCEPTION;
-		}
+		//assert(numInput >= 1);
+		//assert(numLayer >= 2);
+		//assert(activationFunctionType >= 0);
+		//assert(outputActivationFunctionType >= 0);
+		//if (
+		//	numInput < 1 ||
+		//	numLayer < 2 ||
+		//	activationFunctionType < 0 ||
+		//	outputActivationFunctionType < 0
+		//	)
+		//{
+		//	throw ARGUMENT_EXCEPTION;
+		//}
 
-		assert(numNeuron != NULL);
-		if (numNeuron == NULL)
-		{
-			throw ARGUMENT_NULL_EXCEPTION;
-		}
+		//assert(numNeuron != NULL);
+		//if (numNeuron == NULL)
+		//{
+		//	throw ARGUMENT_NULL_EXCEPTION;
+		//}
 
-		_numInput = numInput;
-		_numLayer = numLayer;
-		_numNeuron = numNeuron;
+		//_numInput = numInput;
+		//_numLayer = numLayer;
+		//_numNeuron = new int[numLayer];
+		//for (int iLayer = 0; iLayer < numLayer; iLayer++)
+		//{
+		//	_numNeuron[iLayer] = numNeuron[iLayer];
+		//}
 
-		switch (activationFunctionType)
-		{
-		case FUNCTION_SIGMOID:
-			_ActivationFunction = &Sigmoid;
-			break;
-		case FUNCTION_RELU:
-			_ActivationFunction = &ReLU;
-			break;
-		default:
-			break;
-		}
+		//switch (activationFunctionType)
+		//{
+		//case FUNCTION_SIGMOID:
+		//	_ActivationFunction = &Sigmoid;
+		//	break;
+		//case FUNCTION_RELU:
+		//	_ActivationFunction = &ReLU;
+		//	break;
+		//default:
+		//	break;
+		//}
 
-		switch (outputActivationFunctionType)
-		{
-		case FUNCTION_NONE:
-			_OutputActivationFunction = &Through;
-			break;
-		case FUNCTION_SIGMOID:
-			_OutputActivationFunction = &Sigmoid;
-			break;
-		case FUNCTION_RELU:
-			_OutputActivationFunction = &ReLU;
-			break;
-		case FUNCTION_SOFTMAX:
-			_OutputActivationFunction = NULL;
-		default:
-			break;
-		}
+		//switch (outputActivationFunctionType)
+		//{
+		//case FUNCTION_NONE:
+		//	_OutputActivationFunction = &Through;
+		//	break;
+		//case FUNCTION_SIGMOID:
+		//	_OutputActivationFunction = &Sigmoid;
+		//	break;
+		//case FUNCTION_RELU:
+		//	_OutputActivationFunction = &ReLU;
+		//	break;
+		//case FUNCTION_SOFTMAX:
+		//	_OutputActivationFunction = NULL;
+		//default:
+		//	break;
+		//}
 
-		this->InitializeWeights();
+		//this->InitializeWeights();
 	}
 
 
 	MultiLayerPerceptronCore::~MultiLayerPerceptronCore()
 	{
-		delete[] _numNeuron;
-		delete[] _weight;
-		delete[] _bias;
+		//delete[] _numNeuron;
+		//_numNeuron = NULL;
+		//delete[] _weight;
+		//_weight = NULL;
+		//delete[] _bias;
+		//_bias = NULL;
 	}
 
 
@@ -187,7 +194,7 @@ namespace DeepLearningCore
 			tmpMatrix = this->MatrixPlusVector(tmpMatrix, _bias[_numLayer - 1]);
 			outputMatrix = tmpMatrix.unaryExpr(_OutputActivationFunction);
 		}
-		output = this->Matrix2Pointer(outputMatrix);
+		this->Matrix2Pointer(outputMatrix, &output);
 	}
 
 	MatrixXX MultiLayerPerceptronCore::Pointer2Matrix(WEIGHT_TYPE** p, int rows, int cols)
@@ -203,17 +210,16 @@ namespace DeepLearningCore
 		return output;
 	}
 
-	WEIGHT_TYPE** MultiLayerPerceptronCore::Matrix2Pointer(MatrixXX m)
+	void MultiLayerPerceptronCore::Matrix2Pointer(MatrixXX m, WEIGHT_TYPE*** p)
 	{
 		assert(m.rows() >= 1);
 		assert(m.cols() >= 1);
 
 		int rows = m.rows();
 		int cols = m.cols();
-		WEIGHT_TYPE** p = new WEIGHT_TYPE*[rows];
+		*p = new WEIGHT_TYPE*[rows];
 		for (int iRow = 0; iRow < rows; iRow++)
-			p[iRow] = new WEIGHT_TYPE[cols];
-		return p;
+			*p[iRow] = new WEIGHT_TYPE[cols];
 	}
 
 	MatrixXX MultiLayerPerceptronCore::MatrixPlusVector(MatrixXX m, VectorXX v)
