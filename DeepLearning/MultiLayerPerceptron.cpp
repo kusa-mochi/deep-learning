@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "MultiLayerPerceptron.h"
 
-
 namespace DeepLearning
 {
 	MultiLayerPerceptron::MultiLayerPerceptron(
@@ -13,6 +12,10 @@ namespace DeepLearning
 	{
 		if (numInput < 1) throw gcnew System::ArgumentOutOfRangeException("numInput");
 		if (numNeuron == nullptr) throw gcnew System::ArgumentNullException("numNeuron");
+
+		System::Diagnostics::Trace::TraceInformation("new MultiLayerPerceptron: ƒK[ƒhß’Ê‰ß");
+
+		_numNeuron = numNeuron;
 
 		int* numNeuronPointer = new int[numNeuron->Length];
 		for (int i = 0; i < numNeuron->Length; i++) numNeuronPointer[i] = numNeuron[i];
@@ -53,47 +56,76 @@ namespace DeepLearning
 			activationFunctionInt,
 			outputActivationFunctionInt
 		);
+
+		delete[] numNeuronPointer;
 	}
 
 
 	MultiLayerPerceptron::~MultiLayerPerceptron()
 	{
+		delete _multiLayerPerceptronCore;
 	}
 
-	void MultiLayerPerceptron::SetWeights(cli::array<WEIGHT_TYPE, 3>^ weights)
+	void MultiLayerPerceptron::SetWeights(cli::array<cli::array<WEIGHT_TYPE, 2>^>^ weights)
 	{
 		if (weights == nullptr) throw gcnew System::ArgumentNullException("weights");
 
-		int length0 = weights->GetLength(0);
-		int length1 = weights->GetLength(1);
-		int length2 = weights->GetLength(2);
-		WEIGHT_TYPE*** weightsPointer = NULL;
-
-		weightsPointer = new WEIGHT_TYPE**[length0];
-		for (int i = 0; i < length0; i++)
+		int Layers = weights->Length;
+		WEIGHT_TYPE*** weightsPointer = new WEIGHT_TYPE**[Layers];
+		for (int i = 0; i < Layers; i++)
 		{
-			weightsPointer[i] = new WEIGHT_TYPE*[length1];
-			for (int j = 0; j < length1; j++)
+			int Rows = weights[i]->GetLength(0);
+			int Columns = weights[i]->GetLength(1);
+			weightsPointer[i] = new WEIGHT_TYPE*[Rows];
+			for (int j = 0; j < Rows; j++)
 			{
-				weightsPointer[i][j] = new WEIGHT_TYPE[length2];
-				for (int k = 0; k < length2; k++)
+				weightsPointer[i][j] = new WEIGHT_TYPE[Columns];
+				for (int k = 0; k < Columns; k++)
 				{
-					weightsPointer[i][j][k] = weights[i, j, k];
+					weightsPointer[i][j][k] = weights[i][j, k];
 				}
 			}
 		}
 
 		_multiLayerPerceptronCore->SetWeights(weightsPointer);
 
-		for (int i = 0; i < length0; i++)
+		Layers = weights->Length;
+		for (int i = 0; i < Layers; i++)
 		{
-			for (int j = 0; j < length1; j++)
+			int Rows = weights[i]->GetLength(0);
+			for (int j = 0; j < Rows; j++)
 			{
 				delete[] weightsPointer[i][j];
 			}
 			delete[] weightsPointer[i];
 		}
 		delete[] weightsPointer;
+	}
+
+	void MultiLayerPerceptron::SetBias(cli::array<cli::array<WEIGHT_TYPE>^>^ bias)
+	{
+		if (bias == nullptr) throw gcnew System::ArgumentNullException("bias");
+
+		int Layers = bias->Length;
+		WEIGHT_TYPE** biasPointer = new WEIGHT_TYPE*[Layers];
+		for (int i = 0; i < Layers; i++)
+		{
+			int Neurons = bias[i]->Length;
+			biasPointer[i] = new WEIGHT_TYPE[Neurons];
+			for (int j = 0; j < Neurons; j++)
+			{
+				biasPointer[i][j] = bias[i][j];
+			}
+		}
+
+		_multiLayerPerceptronCore->SetBias(biasPointer);
+
+		Layers = bias->Length;
+		for (int i = 0; i < Layers; i++)
+		{
+			delete[] biasPointer[i];
+		}
+		delete[] biasPointer;
 	}
 
 	cli::array<WEIGHT_TYPE, 2>^ MultiLayerPerceptron::Predict(cli::array<WEIGHT_TYPE, 2>^ input)
@@ -104,7 +136,8 @@ namespace DeepLearning
 		WEIGHT_TYPE** coreOutput = NULL;
 		int inputRows = input->GetLength(0);
 
-		this->ManagedArray2NativeArray(input, coreInput);
+		this->ManagedArray2NativeArray(input, &coreInput);
+		System::Diagnostics::Debug::Assert(coreInput != NULL);
 
 		_multiLayerPerceptronCore->Predict(coreInput, inputRows, coreOutput);
 
@@ -129,18 +162,18 @@ namespace DeepLearning
 		return output;
 	}
 
-	void MultiLayerPerceptron::ManagedArray2NativeArray(cli::array<WEIGHT_TYPE, 2>^ input, WEIGHT_TYPE** output)
+	void MultiLayerPerceptron::ManagedArray2NativeArray(cli::array<WEIGHT_TYPE, 2>^ input, WEIGHT_TYPE*** output)
 	{
 		int inputRows = input->GetLength(0);
 		int inputCols = input->GetLength(1);
 
-		output = new WEIGHT_TYPE*[inputRows];
+		*output = new WEIGHT_TYPE*[inputRows];
 		for (int i = 0; i < inputRows; i++)
 		{
-			output[i] = new WEIGHT_TYPE[inputCols];
+			*output[i] = new WEIGHT_TYPE[inputCols];
 			for (int j = 0; j < inputCols; j++)
 			{
-				output[i][j] = input[i, j];
+				*output[i][j] = input[i, j];
 			}
 		}
 	}

@@ -23,6 +23,7 @@ typedef double WEIGHT_TYPE;
 using namespace std;
 using namespace Eigen;
 typedef Matrix<WEIGHT_TYPE, -1, -1> MatrixXX;
+typedef Matrix<WEIGHT_TYPE, 1, -1> VectorXX;
 #endif
 
 namespace DeepLearningCore
@@ -51,6 +52,7 @@ namespace DeepLearningCore
 			return _numNeuron[_numLayer - 1];
 		}
 		void SetWeights(WEIGHT_TYPE*** weights);
+		void SetBias(WEIGHT_TYPE** bias);
 		void Predict(WEIGHT_TYPE** input, int numData, WEIGHT_TYPE** output);
 	private:
 		int _numLayer = 0;
@@ -61,9 +63,11 @@ namespace DeepLearningCore
 		WEIGHT_TYPE(*_ActivationFunction)(WEIGHT_TYPE) = NULL;
 		WEIGHT_TYPE(*_OutputActivationFunction)(WEIGHT_TYPE) = NULL;
 		MatrixXX* _weight;
+		VectorXX* _bias;
 		void InitializeWeights();
 		MatrixXX Pointer2Matrix(WEIGHT_TYPE** p, int rows, int cols);
 		WEIGHT_TYPE** Matrix2Pointer(MatrixXX m);
+		MatrixXX MatrixPlusVector(MatrixXX m, VectorXX v);
 #endif
 	};
 }
