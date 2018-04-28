@@ -53,7 +53,7 @@ namespace DeepLearningCore
 		}
 		void SetWeights(WEIGHT_TYPE*** weights);
 		void SetBias(WEIGHT_TYPE** bias);
-		void Predict(WEIGHT_TYPE** input, int numData, WEIGHT_TYPE** output);
+		void Predict(WEIGHT_TYPE** input, int numData, WEIGHT_TYPE*** output);
 	private:
 		int _numLayer = 0;
 		int _numInput = 0;

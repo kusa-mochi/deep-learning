@@ -139,7 +139,7 @@ namespace DeepLearning
 		this->ManagedArray2NativeArray(input, &coreInput);
 		System::Diagnostics::Debug::Assert(coreInput != NULL);
 
-		_multiLayerPerceptronCore->Predict(coreInput, inputRows, coreOutput);
+		_multiLayerPerceptronCore->Predict(coreInput, inputRows, &coreOutput);
 
 		for (int i = 0; i < input->GetLength(0); i++)
 		{
@@ -170,10 +170,10 @@ namespace DeepLearning
 		*output = new WEIGHT_TYPE*[inputRows];
 		for (int i = 0; i < inputRows; i++)
 		{
-			*output[i] = new WEIGHT_TYPE[inputCols];
+			(*output)[i] = new WEIGHT_TYPE[inputCols];
 			for (int j = 0; j < inputCols; j++)
 			{
-				*output[i][j] = input[i, j];
+				(*output)[i][j] = input[i, j];
 			}
 		}
 	}

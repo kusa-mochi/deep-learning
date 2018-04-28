@@ -11,9 +11,9 @@ namespace DeepLearningCoreTest
 	{
 	public:
 
-		TEST_METHOD(SmallCaseTest)
+		TEST_METHOD(SmallCaseCoreTest)
 		{
-			Logger::WriteMessage("Begin SmallCaseTest");
+			Logger::WriteMessage("Begin SmallCaseCoreTest");
 
 			int* numNeuron = new int[3]{ 3,2,2 };
 			MultiLayerPerceptronCore* p = new MultiLayerPerceptronCore(
@@ -30,7 +30,7 @@ namespace DeepLearningCoreTest
 			p = NULL;
 
 			Assert::AreEqual(1, 1);
-			Logger::WriteMessage("End SmallCaseTest");
+			Logger::WriteMessage("End SmallCaseCoreTest");
 		}
 
 	};

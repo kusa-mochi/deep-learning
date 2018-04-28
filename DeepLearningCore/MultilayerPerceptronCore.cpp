@@ -146,7 +146,7 @@ namespace DeepLearningCore
 
 		if (bias == NULL) { throw ARGUMENT_NULL_EXCEPTION; }
 
-		for (int iLayer = 1; iLayer < _numLayer; iLayer++)
+		for (int iLayer = 0; iLayer < _numLayer; iLayer++)
 		{
 			for (int iNeuron = 0; iNeuron < _numNeuron[iLayer]; iNeuron++)
 			{
@@ -156,27 +156,21 @@ namespace DeepLearningCore
 	}
 
 
-	void MultiLayerPerceptronCore::Predict(WEIGHT_TYPE** input, int numData, WEIGHT_TYPE** output)
+	void MultiLayerPerceptronCore::Predict(WEIGHT_TYPE** input, int numData, WEIGHT_TYPE*** output)
 	{
 		assert(input != NULL);
 		assert(input[_numInput - 1] != NULL);
 		assert(numData >= 1);
-		assert(output == NULL);
+		assert(*output == NULL);
 		if (input == NULL) { throw ARGUMENT_NULL_EXCEPTION; }
 		if (numData < 1) { throw ARGUMENT_EXCEPTION; }
-		if (output != NULL) { throw INVALID_OPERATION_EXCEPTION; }
-
-		assert(7 == 8);
+		if (*output != NULL) { throw INVALID_OPERATION_EXCEPTION; }
 
 		MatrixXX inputMatrix = this->Pointer2Matrix(input, numData, _numInput);
 		MatrixXX tmpMatrix;
-		assert(5 == 6);
 		tmpMatrix = inputMatrix * _weight[0];
-		assert(3 == 4);
 		tmpMatrix = this->MatrixPlusVector(tmpMatrix, _bias[0]);
-		assert(1 == 2);
 		tmpMatrix = tmpMatrix.unaryExpr(_ActivationFunction);
-		assert(1 == 2);
 		for (int iLayer = 1; iLayer < _numLayer - 1; iLayer++)
 		{
 			tmpMatrix = tmpMatrix * _weight[iLayer];
@@ -194,7 +188,7 @@ namespace DeepLearningCore
 			tmpMatrix = this->MatrixPlusVector(tmpMatrix, _bias[_numLayer - 1]);
 			outputMatrix = tmpMatrix.unaryExpr(_OutputActivationFunction);
 		}
-		this->Matrix2Pointer(outputMatrix, &output);
+		this->Matrix2Pointer(outputMatrix, output);
 	}
 
 	MatrixXX MultiLayerPerceptronCore::Pointer2Matrix(WEIGHT_TYPE** p, int rows, int cols)
@@ -219,7 +213,13 @@ namespace DeepLearningCore
 		int cols = m.cols();
 		*p = new WEIGHT_TYPE*[rows];
 		for (int iRow = 0; iRow < rows; iRow++)
-			*p[iRow] = new WEIGHT_TYPE[cols];
+		{
+			(*p)[iRow] = new WEIGHT_TYPE[cols];
+			for (int iColumn = 0; iColumn < cols; iColumn++)
+			{
+				(*p)[iRow][iColumn] = m(iRow, iColumn);
+			}
+		}
 	}
 
 	MatrixXX MultiLayerPerceptronCore::MatrixPlusVector(MatrixXX m, VectorXX v)
