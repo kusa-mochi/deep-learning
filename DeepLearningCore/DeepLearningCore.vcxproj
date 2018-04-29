@@ -138,6 +138,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AddLayerCore.h" />
+    <ClInclude Include="AffineLayerCore.h" />
+    <ClInclude Include="DeepLearningCore.h" />
+    <ClInclude Include="ILayerCore.h" />
+    <ClInclude Include="MulLayerCore.h" />
     <ClInclude Include="MultiLayerPerceptronCore.h" />
     <ClInclude Include="Eigen\src\Cholesky\LDLT.h" />
     <ClInclude Include="Eigen\src\Cholesky\LLT.h" />
@@ -410,11 +415,18 @@
     <ClInclude Include="Eigen\src\SVD\SVDBase.h" />
     <ClInclude Include="Eigen\src\SVD\UpperBidiagonalization.h" />
     <ClInclude Include="Eigen\src\UmfPackSupport\UmfPackSupport.h" />
+    <ClInclude Include="ReLULayerCore.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="SigmoidLayerCore.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AddLayerCore.cpp" />
+    <ClCompile Include="AffineLayerCore.cpp" />
+    <ClCompile Include="MulLayerCore.cpp" />
     <ClCompile Include="MultiLayerPerceptronCore.cpp" />
+    <ClCompile Include="ReLULayerCore.cpp" />
+    <ClCompile Include="SigmoidLayerCore.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
