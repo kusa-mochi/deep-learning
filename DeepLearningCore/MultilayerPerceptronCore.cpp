@@ -74,7 +74,7 @@ namespace DeepLearningCore
 				prev->Next = p;
 			}
 
-			p->Layer = new AffineLayerCore(_weight[iLayer], _bias[iLayer]);
+			p->Layer = new AffineLayerCore(&_weight[iLayer], &_bias[iLayer]);
 			p->LayerType = _LayerType::Affine;
 			p->Next = new Layer;
 			prev = p;
@@ -85,6 +85,10 @@ namespace DeepLearningCore
 			case _LayerType::None:
 				p->Layer = new IdentityLayerCore();
 				p->LayerType = _LayerType::None;
+				break;
+			case _LayerType::Affine:
+				p->Layer = new AffineLayerCore(&_weight[iLayer], &_bias[iLayer]);
+				p->LayerType = _LayerType::Affine;
 				break;
 			case _LayerType::Sigmoid:
 				p->Layer = new SigmoidLayerCore();

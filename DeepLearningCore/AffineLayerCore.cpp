@@ -4,10 +4,10 @@
 
 namespace DeepLearningCore
 {
-	AffineLayerCore::AffineLayerCore(MatrixXX w, VectorXX b)
+	AffineLayerCore::AffineLayerCore(MatrixXX* pW, VectorXX* pB)
 	{
-		_w = w;
-		_b = b;
+		_pW = pW;
+		_pB = pB;
 	}
 
 
@@ -19,7 +19,7 @@ namespace DeepLearningCore
 	MatrixXX AffineLayerCore::Forward(MatrixXX x)
 	{
 		_x = x;
-		return (x * _w) + _b;
+		return (x * (*_pW)) + (*_pB);
 	}
 
 
@@ -32,7 +32,7 @@ namespace DeepLearningCore
 	LayerBackwardOutput AffineLayerCore::Backward(MatrixXX dout)
 	{
 		LayerBackwardOutput output;
-		output.x = dout * _w.transpose();
+		output.x = dout * _pW->transpose();
 		_dw = _x.transpose() * dout;
 		_db = dout.colwise().sum();
 
