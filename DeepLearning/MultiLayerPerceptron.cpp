@@ -16,11 +16,6 @@ namespace DeepLearning
 
 		System::Diagnostics::Trace::TraceInformation("new MultiLayerPerceptron: ƒK[ƒhß’Ê‰ß");
 
-		//_numNeuron = numNeuron;
-
-		//int* numNeuronPointer = new int[numNeuron->Length];
-		//for (int i = 0; i < numNeuron->Length; i++) numNeuronPointer[i] = numNeuron[i];
-
 		LayerInfo* layerInfo = new LayerInfo[numNeuron->Length];
 		for (int i = 0; i < numNeuron->Length; i++)
 		{
@@ -58,8 +53,6 @@ namespace DeepLearning
 			numNeuron->Length,
 			layerInfo
 		);
-
-		//delete[] numNeuronPointer;
 	}
 
 
