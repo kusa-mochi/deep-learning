@@ -6,7 +6,6 @@ namespace DeepLearningCore
 {
 	ReLULayerCore::ReLULayerCore()
 	{
-		this->Initialize();
 	}
 
 
@@ -15,23 +14,25 @@ namespace DeepLearningCore
 	}
 
 
-	void ReLULayerCore::Initialize()
-	{
-
-	}
-
-
 	MatrixXX ReLULayerCore::Forward(MatrixXX x)
 	{
 		MatrixXX output = x.unaryExpr(&ReLULayerCore::ReLU);
-		_output = x.unaryExpr(&ReLULayerCore::ReLUBool);
+		_output = x.unaryExpr(&ReLULayerCore::ReLUBool).cast<bool>();
 		return output;
 	}
 
 
-	MatrixXX ReLULayerCore::BackwardOneWay(MatrixXX dout)
+	MatrixXX ReLULayerCore::Forward(MatrixXX x, MatrixXX y)
 	{
-		return _output.select(dout, MatrixXX::Zero(dout.size()));
+		throw NOT_IMPLEMENTED_EXCEPTION;
+	}
+
+
+	LayerBackwardOutput ReLULayerCore::Backward(MatrixXX dout)
+	{
+		LayerBackwardOutput output;
+		output.x = _output.select(dout, MatrixXX::Zero(dout.rows(), dout.cols()));
+		return output;
 	}
 
 

@@ -6,7 +6,6 @@ namespace DeepLearningCore
 {
 	MulLayerCore::MulLayerCore()
 	{
-		this->Initialize();
 	}
 
 
@@ -15,9 +14,9 @@ namespace DeepLearningCore
 	}
 
 
-	void MulLayerCore::Initialize()
+	MatrixXX MulLayerCore::Forward(MatrixXX x)
 	{
-
+		throw NOT_IMPLEMENTED_EXCEPTION;
 	}
 
 
@@ -29,7 +28,7 @@ namespace DeepLearningCore
 	}
 
 
-	LayerBackwardOutput MulLayerCore::BackwardTwoWay(MatrixXX dout)
+	LayerBackwardOutput MulLayerCore::Backward(MatrixXX dout)
 	{
 		LayerBackwardOutput output;
 

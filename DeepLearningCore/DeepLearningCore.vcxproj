@@ -78,7 +78,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <CodeAnalysisRuleSet>CppCoreCheckRawPointerRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <EnableCppCoreCheck>true</EnableCppCoreCheck>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -140,8 +140,10 @@
   <ItemGroup>
     <ClInclude Include="AddLayerCore.h" />
     <ClInclude Include="AffineLayerCore.h" />
-    <ClInclude Include="DeepLearningCore.h" />
-    <ClInclude Include="ILayerCore.h" />
+    <ClInclude Include="CommonTypes.h" />
+    <ClInclude Include="IdentityLayerCore.h" />
+    <ClInclude Include="ImportEigen.h" />
+    <ClInclude Include="Layer.h" />
     <ClInclude Include="MulLayerCore.h" />
     <ClInclude Include="MultiLayerPerceptronCore.h" />
     <ClInclude Include="Eigen\src\Cholesky\LDLT.h" />
@@ -423,6 +425,7 @@
   <ItemGroup>
     <ClCompile Include="AddLayerCore.cpp" />
     <ClCompile Include="AffineLayerCore.cpp" />
+    <ClCompile Include="IdentityLayerCore.cpp" />
     <ClCompile Include="MulLayerCore.cpp" />
     <ClCompile Include="MultiLayerPerceptronCore.cpp" />
     <ClCompile Include="ReLULayerCore.cpp" />

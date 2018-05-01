@@ -1,5 +1,6 @@
 #pragma once
 #include "stdafx.h"
+#include "CommonTypes.h"
 #include "MultiLayerPerceptronCore.h"
 #include "Enums.h"
 
@@ -13,8 +14,7 @@ namespace DeepLearning
 		MultiLayerPerceptron(
 			int numInput,											// 入力の次元数
 			cli::array<int>^ numNeuron,								// 各層のニューロンの数
-			ActivationFunctionType activationFunctionType,			// 中間層の活性化関数
-			OutputActivationFunctionType outputActivationFunctionType	// 出力層の活性化関数
+			cli::array<LayerType>^ layerType						// 各層の計算方法
 		);
 		virtual ~MultiLayerPerceptron();
 		void SetWeights(cli::array<cli::array<WEIGHT_TYPE, 2>^>^ weights);

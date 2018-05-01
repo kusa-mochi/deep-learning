@@ -6,18 +6,11 @@ namespace DeepLearningCore
 {
 	SigmoidLayerCore::SigmoidLayerCore()
 	{
-		this->Initialize();
 	}
 
 
 	SigmoidLayerCore::~SigmoidLayerCore()
 	{
-	}
-
-
-	void SigmoidLayerCore::Initialize()
-	{
-
 	}
 
 
@@ -28,9 +21,17 @@ namespace DeepLearningCore
 	}
 
 
-	MatrixXX SigmoidLayerCore::BackwardOneWay(MatrixXX dout)
+	MatrixXX SigmoidLayerCore::Forward(MatrixXX x, MatrixXX y)
 	{
-		return (dout * (MatrixXX::Ones(_output.size()) - _output) * _output);
+		throw NOT_IMPLEMENTED_EXCEPTION;
+	}
+
+
+	LayerBackwardOutput SigmoidLayerCore::Backward(MatrixXX dout)
+	{
+		LayerBackwardOutput output;
+		output.x = dout * (MatrixXX::Ones(_output.rows(), _output.cols()) - _output) * _output;
+		return output;
 	}
 
 

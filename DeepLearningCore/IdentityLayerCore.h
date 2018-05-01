@@ -3,18 +3,16 @@
 
 namespace DeepLearningCore
 {
-	class SigmoidLayerCore :
+	class IdentityLayerCore :
 		public ILayerCore
 	{
 	public:
-		SigmoidLayerCore();
-		virtual ~SigmoidLayerCore();
+		IdentityLayerCore();
+		virtual ~IdentityLayerCore();
 		virtual MatrixXX Forward(MatrixXX x);
 		virtual MatrixXX Forward(MatrixXX x, MatrixXX y);
 		virtual LayerBackwardOutput Backward(MatrixXX dout);
-		static WEIGHT_TYPE Sigmoid(WEIGHT_TYPE x);
 	private:
 		int _numInput = 1;
-		MatrixXX _output;
 	};
 }

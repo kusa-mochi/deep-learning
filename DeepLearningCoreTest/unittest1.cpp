@@ -19,9 +19,7 @@ namespace DeepLearningCoreTest
 			MultiLayerPerceptronCore* p = new MultiLayerPerceptronCore(
 				2,
 				3,
-				numNeuron,
-				FUNCTION_SIGMOID,
-				FUNCTION_NONE
+				numNeuron
 			);
 
 			delete[] numNeuron;

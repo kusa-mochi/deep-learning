@@ -6,58 +6,60 @@ namespace DeepLearning
 	MultiLayerPerceptron::MultiLayerPerceptron(
 		int numInput,											// 入力の次元数
 		cli::array<int>^ numNeuron,								// 各層のニューロンの数
-		ActivationFunctionType activationFunctionType,			// 中間層の活性化関数
-		OutputActivationFunctionType outputActivationFunctionType		// 出力層の活性化関数
+		cli::array<LayerType>^ layerType						// 各層の計算方法
 	)
 	{
 		if (numInput < 1) throw gcnew System::ArgumentOutOfRangeException("numInput");
 		if (numNeuron == nullptr) throw gcnew System::ArgumentNullException("numNeuron");
+		if (layerType == nullptr) throw gcnew System::ArgumentNullException("layerType");
+		if (numNeuron->Length != layerType->Length) throw gcnew System::ArgumentException("numNeuron,layerType");
 
 		System::Diagnostics::Trace::TraceInformation("new MultiLayerPerceptron: ガード節通過");
 
-		_numNeuron = numNeuron;
+		//_numNeuron = numNeuron;
 
-		int* numNeuronPointer = new int[numNeuron->Length];
-		for (int i = 0; i < numNeuron->Length; i++) numNeuronPointer[i] = numNeuron[i];
+		//int* numNeuronPointer = new int[numNeuron->Length];
+		//for (int i = 0; i < numNeuron->Length; i++) numNeuronPointer[i] = numNeuron[i];
 
-		int activationFunctionInt = -1;
-		int outputActivationFunctionInt = -1;
-
-		switch (activationFunctionType)
+		LayerInfo* layerInfo = new LayerInfo[numNeuron->Length];
+		for (int i = 0; i < numNeuron->Length; i++)
 		{
-		case ActivationFunctionType::Sigmoid:
-			activationFunctionInt = FUNCTION_SIGMOID;
-			break;
-		case ActivationFunctionType::ReLU:
-			activationFunctionInt = FUNCTION_RELU;
-			break;
-		}
-
-		switch (outputActivationFunctionType)
-		{
-		case OutputActivationFunctionType::None:
-			outputActivationFunctionInt = FUNCTION_NONE;
-			break;
-		case OutputActivationFunctionType::SoftMax:
-			outputActivationFunctionInt = FUNCTION_SOFTMAX;
-			break;
-		case OutputActivationFunctionType::Sigmoid:
-			outputActivationFunctionInt = FUNCTION_SIGMOID;
-			break;
-		case OutputActivationFunctionType::ReLU:
-			outputActivationFunctionInt = FUNCTION_RELU;
-			break;
+			layerInfo[i].NumNeuron = numNeuron[i];
+			switch (layerType[i])
+			{
+			case LayerType::None:
+				layerInfo[i].LayerType = _LayerType::None;
+				break;
+			case LayerType::Add:
+				layerInfo[i].LayerType = _LayerType::Add;
+				break;
+			case LayerType::Mul:
+				layerInfo[i].LayerType = _LayerType::Mul;
+				break;
+			case LayerType::Affine:
+				layerInfo[i].LayerType = _LayerType::Affine;
+				break;
+			case LayerType::Sigmoid:
+				layerInfo[i].LayerType = _LayerType::Sigmoid;
+				break;
+			case LayerType::ReLU:
+				layerInfo[i].LayerType = _LayerType::ReLU;
+				break;
+			case LayerType::SoftMax:
+				layerInfo[i].LayerType = _LayerType::SoftMax;
+				break;
+			default:
+				throw INVALID_OPERATION_EXCEPTION;
+			}
 		}
 
 		_multiLayerPerceptronCore = new MultiLayerPerceptronCore(
 			numInput,
 			numNeuron->Length,
-			numNeuronPointer,
-			activationFunctionInt,
-			outputActivationFunctionInt
+			layerInfo
 		);
 
-		delete[] numNeuronPointer;
+		//delete[] numNeuronPointer;
 	}
 
 

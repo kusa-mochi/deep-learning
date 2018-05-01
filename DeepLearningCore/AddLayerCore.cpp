@@ -6,7 +6,6 @@ namespace DeepLearningCore
 {
 	AddLayerCore::AddLayerCore()
 	{
-		this->Initialize();
 	}
 
 
@@ -15,9 +14,9 @@ namespace DeepLearningCore
 	}
 
 
-	void AddLayerCore::Initialize()
+	MatrixXX AddLayerCore::Forward(MatrixXX x)
 	{
-
+		throw NOT_IMPLEMENTED_EXCEPTION;
 	}
 
 
@@ -27,7 +26,7 @@ namespace DeepLearningCore
 	}
 
 
-	LayerBackwardOutput AddLayerCore::BackwardTwoWay(MatrixXX dout)
+	LayerBackwardOutput AddLayerCore::Backward(MatrixXX dout)
 	{
 		LayerBackwardOutput output;
 		output.x = dout;

@@ -1,18 +1,19 @@
 #pragma once
-
-#include "ILayerCore.h"
+#include "Layer.h"
 
 namespace DeepLearningCore
 {
-	class AffineLayerCore
+	class AffineLayerCore :
+		public ILayerCore
 	{
 	public:
-		AffineLayerCore();
+		AffineLayerCore(MatrixXX w, VectorXX b);
 		virtual ~AffineLayerCore();
-		virtual void Initialize(VectorXX b);
 		virtual MatrixXX Forward(MatrixXX x);
-		virtual MatrixXX BackwardOneWay(MatrixXX dout);
+		virtual MatrixXX Forward(MatrixXX x, MatrixXX y);
+		virtual LayerBackwardOutput Backward(MatrixXX dout);
 	private:
+		int _numInput = 1;
 		MatrixXX _w;
 		VectorXX _b;
 		MatrixXX _x;

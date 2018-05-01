@@ -1,5 +1,5 @@
 #pragma once
-#include "ILayerCore.h"
+#include "Layer.h"
 
 namespace DeepLearningCore
 {
@@ -9,10 +9,11 @@ namespace DeepLearningCore
 	public:
 		MulLayerCore();
 		virtual ~MulLayerCore();
-		virtual void Initialize();
+		virtual MatrixXX Forward(MatrixXX x);
 		virtual MatrixXX Forward(MatrixXX x, MatrixXX y);
-		LayerBackwardOutput BackwardTwoWay(MatrixXX dout);
+		LayerBackwardOutput Backward(MatrixXX dout);
 	private:
+		int _numInput = 2;
 		MatrixXX _x;
 		MatrixXX _y;
 	};

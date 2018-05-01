@@ -4,94 +4,40 @@
 
 namespace DeepLearningCore
 {
-	WEIGHT_TYPE Through(WEIGHT_TYPE x)
-	{
-		return x;
-	}
-
-	WEIGHT_TYPE Sigmoid(WEIGHT_TYPE x)
-	{
-		return (1.0 / (1.0 + std::exp(-x)));
-	}
-
-	WEIGHT_TYPE ReLU(WEIGHT_TYPE x)
-	{
-		return (x > 0.0 ? x : 0.0);
-	}
-
 	MultiLayerPerceptronCore::MultiLayerPerceptronCore(
 		int numInput,
 		int numLayer,
-		int* numNeuron,
-		int activationFunctionType,
-		int outputActivationFunctionType
+		LayerInfo* layerInfo
 	)
 	{
 		assert(numInput >= 1);
 		assert(numLayer >= 2);
-		assert(activationFunctionType >= 0);
-		assert(outputActivationFunctionType >= 0);
 		if (
 			numInput < 1 ||
-			numLayer < 2 ||
-			activationFunctionType < 0 ||
-			outputActivationFunctionType < 0
+			numLayer < 2
 			)
 		{
 			throw ARGUMENT_EXCEPTION;
 		}
 
-		assert(numNeuron != NULL);
-		if (numNeuron == NULL)
+		assert(layerInfo != NULL);
+		if (
+			layerInfo == NULL
+			)
 		{
 			throw ARGUMENT_NULL_EXCEPTION;
 		}
 
 		_numInput = numInput;
 		_numLayer = numLayer;
-		_numNeuron = new int[numLayer];
-		for (int iLayer = 0; iLayer < numLayer; iLayer++)
-		{
-			_numNeuron[iLayer] = numNeuron[iLayer];
-		}
-
-		switch (activationFunctionType)
-		{
-		case FUNCTION_SIGMOID:
-			_ActivationFunction = &Sigmoid;
-			break;
-		case FUNCTION_RELU:
-			_ActivationFunction = &ReLU;
-			break;
-		default:
-			break;
-		}
-
-		switch (outputActivationFunctionType)
-		{
-		case FUNCTION_NONE:
-			_OutputActivationFunction = &Through;
-			break;
-		case FUNCTION_SIGMOID:
-			_OutputActivationFunction = &Sigmoid;
-			break;
-		case FUNCTION_RELU:
-			_OutputActivationFunction = &ReLU;
-			break;
-		case FUNCTION_SOFTMAX:
-			_OutputActivationFunction = NULL;
-		default:
-			break;
-		}
-
+		_layerInfo = layerInfo;
 		this->InitializeWeights();
+		this->InitializeLayers();
 	}
 
 
 	MultiLayerPerceptronCore::~MultiLayerPerceptronCore()
 	{
-		delete[] _numNeuron;
-		_numNeuron = NULL;
 		delete[] _weight;
 		_weight = NULL;
 		delete[] _bias;
@@ -102,13 +48,60 @@ namespace DeepLearningCore
 	void MultiLayerPerceptronCore::InitializeWeights()
 	{
 		_weight = new MatrixXX[_numLayer];
-		_weight[0] = MatrixXX::Random(_numInput, _numNeuron[0]);
+		_weight[0] = MatrixXX::Random(_numInput, _layerInfo[0].NumNeuron);
 		for (int iLayer = 1; iLayer < _numLayer; iLayer++)
-			_weight[iLayer] = MatrixXX::Random(_numNeuron[iLayer - 1], _numNeuron[iLayer]);
+			_weight[iLayer] = MatrixXX::Random(_layerInfo[iLayer - 1].NumNeuron, _layerInfo[iLayer].NumNeuron);
 
 		_bias = new VectorXX[_numLayer];
 		for (int iLayer = 0; iLayer < _numLayer; iLayer++)
-			_bias[iLayer] = VectorXX::Random(1, _numNeuron[iLayer]);
+			_bias[iLayer] = VectorXX::Random(1, _layerInfo[iLayer].NumNeuron);
+	}
+
+
+	void MultiLayerPerceptronCore::InitializeLayers()
+	{
+		Layer* prev = NULL;
+		Layer* p = NULL;
+		for (int iLayer = 0; iLayer < _numLayer; iLayer++)
+		{
+			p = new Layer;
+			if (iLayer == 0)
+			{
+				_layer = p;
+			}
+			else
+			{
+				prev->Next = p;
+			}
+
+			p->Layer = new AffineLayerCore(_weight[iLayer], _bias[iLayer]);
+			p->LayerType = _LayerType::Affine;
+			p->Next = new Layer;
+			prev = p;
+			p = p->Next;
+
+			switch (_layerInfo[iLayer].LayerType)
+			{
+			case _LayerType::None:
+				p->Layer = new IdentityLayerCore();
+				p->LayerType = _LayerType::None;
+				break;
+			case _LayerType::Sigmoid:
+				p->Layer = new SigmoidLayerCore();
+				p->LayerType = _LayerType::Sigmoid;
+				break;
+			case _LayerType::ReLU:
+				p->Layer = new ReLULayerCore();
+				p->LayerType = _LayerType::ReLU;
+				break;
+			default:
+				throw INVALID_OPERATION_EXCEPTION;
+			}
+
+			p->Next = NULL;
+			prev = p;
+			p = p->Next;
+		}
 	}
 
 
@@ -119,7 +112,7 @@ namespace DeepLearningCore
 
 		if (weights == NULL) { throw ARGUMENT_NULL_EXCEPTION; }
 
-		for (int iNeuron = 0; iNeuron < _numNeuron[0]; iNeuron++)
+		for (int iNeuron = 0; iNeuron < _layerInfo[0].NumNeuron; iNeuron++)
 		{
 			for (int iInput = 0; iInput < _numInput; iInput++)
 			{
@@ -128,9 +121,9 @@ namespace DeepLearningCore
 		}
 		for (int iLayer = 1; iLayer < _numLayer; iLayer++)
 		{
-			for (int iNeuron = 0; iNeuron < _numNeuron[iLayer]; iNeuron++)
+			for (int iNeuron = 0; iNeuron < _layerInfo[iLayer].NumNeuron; iNeuron++)
 			{
-				for (int iInput = 0; iInput < _numNeuron[iLayer - 1]; iInput++)
+				for (int iInput = 0; iInput < _layerInfo[iLayer - 1].NumNeuron; iInput++)
 				{
 					_weight[iLayer](iInput, iNeuron) = weights[iLayer][iInput][iNeuron];
 				}
@@ -148,7 +141,7 @@ namespace DeepLearningCore
 
 		for (int iLayer = 0; iLayer < _numLayer; iLayer++)
 		{
-			for (int iNeuron = 0; iNeuron < _numNeuron[iLayer]; iNeuron++)
+			for (int iNeuron = 0; iNeuron < _layerInfo[iLayer].NumNeuron; iNeuron++)
 			{
 				_bias[iLayer](iNeuron) = bias[iLayer][iNeuron];
 			}
@@ -166,29 +159,22 @@ namespace DeepLearningCore
 		if (numData < 1) { throw ARGUMENT_EXCEPTION; }
 		if (*output != NULL) { throw INVALID_OPERATION_EXCEPTION; }
 
-		MatrixXX inputMatrix = this->Pointer2Matrix(input, numData, _numInput);
-		MatrixXX tmpMatrix;
-		tmpMatrix = inputMatrix * _weight[0];
-		tmpMatrix = this->MatrixPlusVector(tmpMatrix, _bias[0]);
-		tmpMatrix = tmpMatrix.unaryExpr(_ActivationFunction);
-		for (int iLayer = 1; iLayer < _numLayer - 1; iLayer++)
+		MatrixXX tmpMatrix = this->Pointer2Matrix(input, numData, _numInput);
+
+		for (Layer* pLayer = _layer; pLayer != NULL; pLayer = pLayer->Next)
 		{
-			tmpMatrix = tmpMatrix * _weight[iLayer];
-			tmpMatrix = this->MatrixPlusVector(tmpMatrix, _bias[iLayer]);
-			tmpMatrix = tmpMatrix.unaryExpr(_ActivationFunction);
+			tmpMatrix = pLayer->Layer->Forward(tmpMatrix);
 		}
-		MatrixXX outputMatrix;
-		if (_OutputActivationFunction == NULL)
-		{
-			// TODO: Apply Softmax function
-		}
-		else
-		{
-			tmpMatrix = tmpMatrix * _weight[_numLayer - 1];
-			tmpMatrix = this->MatrixPlusVector(tmpMatrix, _bias[_numLayer - 1]);
-			outputMatrix = tmpMatrix.unaryExpr(_OutputActivationFunction);
-		}
-		this->Matrix2Pointer(outputMatrix, output);
+
+		//AffineLayerCore al0(_weight[0], _bias[0]), al1(_weight[1], _bias[1]), al2(_weight[2], _bias[2]);
+		//tmpMatrix = al0.Forward(tmpMatrix);
+		//SigmoidLayerCore sl0, sl1;
+		//tmpMatrix = sl0.Forward(tmpMatrix);
+		//tmpMatrix = al1.Forward(tmpMatrix);
+		//tmpMatrix = sl1.Forward(tmpMatrix);
+		//tmpMatrix = al2.Forward(tmpMatrix);
+
+		this->Matrix2Pointer(tmpMatrix, output);
 	}
 
 	MatrixXX MultiLayerPerceptronCore::Pointer2Matrix(WEIGHT_TYPE** p, int rows, int cols)
@@ -209,8 +195,8 @@ namespace DeepLearningCore
 		assert(m.rows() >= 1);
 		assert(m.cols() >= 1);
 
-		int rows = m.rows();
-		int cols = m.cols();
+		int rows = (int)m.rows();
+		int cols = (int)m.cols();
 		*p = new WEIGHT_TYPE*[rows];
 		for (int iRow = 0; iRow < rows; iRow++)
 		{

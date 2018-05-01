@@ -2,6 +2,12 @@
 
 namespace DeepLearning
 {
-	public enum class ActivationFunctionType : int { Sigmoid, ReLU };
-	public enum class OutputActivationFunctionType : int { None, SoftMax, Sigmoid, ReLU };
+	//None = 0,
+	//	Add,
+	//	Mul,
+	//	Affine,
+	//	Sigmoid,
+	//	ReLU,
+	//  SoftMax
+	public enum class LayerType : int { None, Add, Mul, Affine, Sigmoid, ReLU, SoftMax };
 }
