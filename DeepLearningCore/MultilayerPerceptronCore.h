@@ -71,6 +71,7 @@ namespace DeepLearningCore
 		LayerInfo* _layerInfo = NULL;
 		int* _layer = NULL;
 		void InitializeWeights();
+		void InitializeLayers();
 		void Pointer2Matrix(WEIGHT_TYPE** p, int rows, int cols);
 		void Matrix2Pointer(int m, WEIGHT_TYPE*** p);
 		void MatrixPlusVector(int m, int v);
