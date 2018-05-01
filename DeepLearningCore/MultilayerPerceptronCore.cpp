@@ -170,14 +170,6 @@ namespace DeepLearningCore
 			tmpMatrix = pLayer->Layer->Forward(tmpMatrix);
 		}
 
-		//AffineLayerCore al0(_weight[0], _bias[0]), al1(_weight[1], _bias[1]), al2(_weight[2], _bias[2]);
-		//tmpMatrix = al0.Forward(tmpMatrix);
-		//SigmoidLayerCore sl0, sl1;
-		//tmpMatrix = sl0.Forward(tmpMatrix);
-		//tmpMatrix = al1.Forward(tmpMatrix);
-		//tmpMatrix = sl1.Forward(tmpMatrix);
-		//tmpMatrix = al2.Forward(tmpMatrix);
-
 		this->Matrix2Pointer(tmpMatrix, output);
 	}
 
