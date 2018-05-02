@@ -69,10 +69,12 @@ namespace DeepLearningCore
 			if (iLayer == 0)
 			{
 				_layer = p;
+				p->Prev = NULL;
 			}
 			else
 			{
 				prev->Next = p;
+				p->Prev = prev;
 			}
 
 			p->Layer = new AffineLayerCore(&_weight[iLayer], &_bias[iLayer]);
@@ -84,6 +86,8 @@ namespace DeepLearningCore
 				// 次の層はないことにする。
 				p->Next = NULL;
 
+				_layerEnd = p;
+
 				// この関数の処理を終了する。
 				return;
 			}
@@ -91,6 +95,7 @@ namespace DeepLearningCore
 			p->Next = new Layer;
 			prev = p;
 			p = p->Next;
+			p->Prev = prev;
 
 			switch (_layerInfo[iLayer].LayerType)
 			{
@@ -286,13 +291,21 @@ namespace DeepLearningCore
 	}
 
 
-	MatrixXX* MultiLayerPerceptronCore::Gradient(MatrixXX m, MatrixXX t)
+	void MultiLayerPerceptronCore::Gradient(MatrixXX m, MatrixXX t)
 	{
+		// 順方向の計算を行い，各層に学習に必要な情報を残す。
 		this->Loss(m, t);
 
-		// TODO
+		// 出力層
+		LayerBackwardOutput backwardOutput = _lastLayer->Layer->Backward(MatrixXX::Ones(1, 1));
+		MatrixXX dout = backwardOutput.x;
 
-		// TODO
-		return _weight;
+		// 中間層
+		for (Layer* p = _layerEnd; p != NULL; p = p->Prev)
+		{
+			// 各AffineLayer内に，重みとバイアスの変化分dw, dbが記録される。
+			backwardOutput = p->Layer->Backward(dout);
+			dout = backwardOutput.x;
+		}
 	}
 }

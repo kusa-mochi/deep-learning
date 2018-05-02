@@ -23,5 +23,6 @@ namespace DeepLearningCore
 		ILayerCore* Layer;
 		_LayerType LayerType;
 		struct ST_Layer* Next;
+		struct ST_Layer* Prev;
 	} Layer;
 }
