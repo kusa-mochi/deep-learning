@@ -19,6 +19,7 @@ using namespace std;
 #include "AffineLayerCore.h"
 #include "SigmoidLayerCore.h"
 #include "ReLULayerCore.h"
+#include "SoftmaxWithLoss.h"
 #endif
 
 namespace DeepLearningCore
@@ -56,12 +57,17 @@ namespace DeepLearningCore
 		VectorXX* _bias = NULL;
 		LayerInfo* _layerInfo = NULL;
 		Layer* _layer = NULL;
+		Layer* _lastLayer = NULL;
 		void InitializeWeights();
 		void InitializeLayers();
+		void InitializeLastLayer();
 		MatrixXX Pointer2Matrix(WEIGHT_TYPE** p, int rows, int cols);
 		void Matrix2Pointer(MatrixXX m, WEIGHT_TYPE*** p);
 		MatrixXX MatrixPlusVector(MatrixXX m, VectorXX v);
-		
+		MatrixXX PredictCore(MatrixXX input);
+		MatrixXX ApplyLastLayer(MatrixXX m, MatrixXX t);
+		MatrixXX Loss(MatrixXX m, MatrixXX t);
+		MatrixXX* Gradient(MatrixXX input, MatrixXX t);
 #else
 		// 以下は，このクラスのインスタンスをdeleteする際に，
 		// 解放対象とするメモリ領域をヒープ領域のサイズに一致させるための措置。
@@ -70,11 +76,17 @@ namespace DeepLearningCore
 		int* _bias = NULL;
 		LayerInfo* _layerInfo = NULL;
 		int* _layer = NULL;
+		int* _lastLayer = NULL;
 		void InitializeWeights();
 		void InitializeLayers();
-		void Pointer2Matrix(WEIGHT_TYPE** p, int rows, int cols);
+		void InitializeLastLayer();
+		int Pointer2Matrix(WEIGHT_TYPE** p, int rows, int cols);
 		void Matrix2Pointer(int m, WEIGHT_TYPE*** p);
-		void MatrixPlusVector(int m, int v);
+		int MatrixPlusVector(int m, int v);
+		int PredictCore(int input);
+		int ApplyLastLayer(int m, int t);
+		int Loss(int m, int t);
+		int* Gradient(int input, int t);
 #endif
 	};
-}
+	}

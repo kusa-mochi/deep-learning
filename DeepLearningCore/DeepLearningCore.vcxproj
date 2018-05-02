@@ -420,6 +420,7 @@
     <ClInclude Include="ReLULayerCore.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SigmoidLayerCore.h" />
+    <ClInclude Include="SoftmaxWithLoss.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
@@ -430,6 +431,7 @@
     <ClCompile Include="MultiLayerPerceptronCore.cpp" />
     <ClCompile Include="ReLULayerCore.cpp" />
     <ClCompile Include="SigmoidLayerCore.cpp" />
+    <ClCompile Include="SoftmaxWithLoss.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

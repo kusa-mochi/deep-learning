@@ -33,6 +33,7 @@ namespace DeepLearningCore
 		_layerInfo = layerInfo;
 		this->InitializeWeights();
 		this->InitializeLayers();
+		this->InitializeLastLayer();
 	}
 
 
@@ -76,6 +77,17 @@ namespace DeepLearningCore
 
 			p->Layer = new AffineLayerCore(&_weight[iLayer], &_bias[iLayer]);
 			p->LayerType = _LayerType::Affine;
+
+			// o—Í‘w‚Ìê‡
+			if (iLayer == _numLayer - 1)
+			{
+				// ŽŸ‚Ì‘w‚Í‚È‚¢‚±‚Æ‚É‚·‚éB
+				p->Next = NULL;
+
+				// ‚±‚ÌŠÖ”‚Ìˆ—‚ðI—¹‚·‚éB
+				return;
+			}
+
 			p->Next = new Layer;
 			prev = p;
 			p = p->Next;
@@ -105,6 +117,36 @@ namespace DeepLearningCore
 			p->Next = NULL;
 			prev = p;
 			p = p->Next;
+		}
+	}
+
+
+	void MultiLayerPerceptronCore::InitializeLastLayer()
+	{
+		switch (_layerInfo[_numLayer - 1].LayerType)
+		{
+		case _LayerType::None:
+			_lastLayer->Layer = new IdentityLayerCore();
+			_lastLayer->LayerType = _LayerType::None;
+			break;
+		case _LayerType::Affine:
+			_lastLayer->Layer = new AffineLayerCore(&_weight[_numLayer - 1], &_bias[_numLayer - 1]);
+			_lastLayer->LayerType = _LayerType::Affine;
+			break;
+		case _LayerType::Sigmoid:
+			_lastLayer->Layer = new SigmoidLayerCore();
+			_lastLayer->LayerType = _LayerType::Sigmoid;
+			break;
+		case _LayerType::ReLU:
+			_lastLayer->Layer = new ReLULayerCore();
+			_lastLayer->LayerType = _LayerType::ReLU;
+			break;
+		case _LayerType::SoftMax:
+			_lastLayer->Layer = new SoftmaxWithLoss();
+			_lastLayer->LayerType = _LayerType::SoftMax;
+			break;
+		default:
+			throw INVALID_OPERATION_EXCEPTION;
 		}
 	}
 
@@ -164,12 +206,7 @@ namespace DeepLearningCore
 		if (*output != NULL) { throw INVALID_OPERATION_EXCEPTION; }
 
 		MatrixXX tmpMatrix = this->Pointer2Matrix(input, numData, _numInput);
-
-		for (Layer* pLayer = _layer; pLayer != NULL; pLayer = pLayer->Next)
-		{
-			tmpMatrix = pLayer->Layer->Forward(tmpMatrix);
-		}
-
+		tmpMatrix = this->PredictCore(tmpMatrix);
 		this->Matrix2Pointer(tmpMatrix, output);
 	}
 
@@ -219,5 +256,43 @@ namespace DeepLearningCore
 				output(iRow, iColumn) = m(iRow, iColumn) + v(iColumn);
 
 		return output;
+	}
+
+
+	MatrixXX MultiLayerPerceptronCore::PredictCore(MatrixXX input)
+	{
+		for (Layer* pLayer = _layer; pLayer != NULL; pLayer = pLayer->Next)
+		{
+			input = pLayer->Layer->Forward(input);
+		}
+
+		MatrixXX output = input;
+
+		return output;
+	}
+
+
+	MatrixXX MultiLayerPerceptronCore::ApplyLastLayer(MatrixXX m, MatrixXX t)
+	{
+		return _lastLayer->Layer->Forward(m, t);
+	}
+
+
+	MatrixXX MultiLayerPerceptronCore::Loss(MatrixXX m, MatrixXX t)
+	{
+		MatrixXX y = this->PredictCore(m);
+		MatrixXX output = this->ApplyLastLayer(y, t);
+		return output;
+	}
+
+
+	MatrixXX* MultiLayerPerceptronCore::Gradient(MatrixXX m, MatrixXX t)
+	{
+		this->Loss(m, t);
+
+		// TODO
+
+		// TODO
+		return _weight;
 	}
 }
