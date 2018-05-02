@@ -283,22 +283,22 @@ namespace DeepLearningCore
 	}
 
 
-	MatrixXX MultiLayerPerceptronCore::Loss(MatrixXX m, MatrixXX t)
+	MatrixXX MultiLayerPerceptronCore::Loss(MatrixXX x, MatrixXX t)
 	{
-		MatrixXX y = this->PredictCore(m);
+		MatrixXX y = this->PredictCore(x);
 		MatrixXX output = this->ApplyLastLayer(y, t);
 		return output;
 	}
 
 
-	WeightsAndBias MultiLayerPerceptronCore::Gradient(MatrixXX m, MatrixXX t)
+	WeightsAndBias MultiLayerPerceptronCore::Gradient(MatrixXX x, MatrixXX t)
 	{
 		WeightsAndBias output;
 		output.weights = new MatrixXX[_numLayer];
 		output.bias = new VectorXX[_numLayer];
 
 		// 順方向の計算を行い，各層に学習に必要な情報を残す。
-		this->Loss(m, t);
+		this->Loss(x, t);
 
 		// 出力層
 		LayerBackwardOutput backwardOutput = _lastLayer->Layer->Backward(MatrixXX::Ones(1, 1));
@@ -329,13 +329,56 @@ namespace DeepLearningCore
 		return output;
 	}
 
-	WeightsAndBias MultiLayerPerceptronCore::NumericGradient(MatrixXX m, MatrixXX t)
+	WeightsAndBias MultiLayerPerceptronCore::NumericGradient(MatrixXX x, MatrixXX t)
 	{
 		WeightsAndBias output;
 		output.weights = new MatrixXX[_numLayer];
 		output.bias = new VectorXX[_numLayer];
+		WEIGHT_TYPE justBefore = 0.0;
+		WEIGHT_TYPE justAfter = 0.0;
+		WEIGHT_TYPE tmpWeight = 0.0;
+		WEIGHT_TYPE tmpBias = 0.0;
+		WEIGHT_TYPE h = 0.000001;
 
-		// TODO
+		for (int iLayer = 0; iLayer < _numLayer; iLayer++)
+		{
+			output.weights[iLayer] = MatrixXX::Zero(_weight[iLayer].rows(), _weight[iLayer].cols());
+			output.bias[iLayer] = VectorXX::Zero(_bias[iLayer].cols());
+
+			for (int iColumn = 0; iColumn < _weight[iLayer].cols(); iColumn++)
+			{
+				for (int iRow = 0; iRow < _weight[iLayer].rows(); iRow++)
+				{
+					// 元の重みを保持しておく。
+					tmpWeight = _weight[iLayer](iRow, iColumn);
+
+					_weight[iLayer](iRow, iColumn) = tmpWeight - h;
+					justBefore = this->Loss(x, t)(0, 0);
+
+					_weight[iLayer](iRow, iColumn) = tmpWeight + h;
+					justAfter = this->Loss(x, t)(0, 0);
+
+					output.weights[iLayer](iRow, iColumn) = (justAfter - justBefore) / (2 * h);
+
+					// 重みを元に戻す。
+					_weight[iLayer](iRow, iColumn) = tmpWeight;
+				}
+
+				// 元のバイアスを保持しておく。
+				tmpBias = _bias[iLayer](iColumn);
+
+				_bias[iLayer](iColumn) = tmpBias - h;
+				justBefore = this->Loss(x, t)(0, 0);
+
+				_bias[iLayer](iColumn) = tmpBias + h;
+				justBefore = this->Loss(x, t)(0, 0);
+
+				output.bias[iLayer](iColumn) = (justAfter - justBefore) / (2 * h);
+
+				// バイアスを元に戻す。
+				_bias[iLayer](iColumn) = tmpBias;
+			}
+		}
 
 		return output;
 	}

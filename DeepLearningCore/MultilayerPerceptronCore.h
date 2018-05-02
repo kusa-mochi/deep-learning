@@ -67,9 +67,9 @@ namespace DeepLearningCore
 		MatrixXX MatrixPlusVector(MatrixXX m, VectorXX v);
 		MatrixXX PredictCore(MatrixXX input);
 		MatrixXX ApplyLastLayer(MatrixXX m, MatrixXX t);
-		MatrixXX Loss(MatrixXX m, MatrixXX t);
-		WeightsAndBias Gradient(MatrixXX m, MatrixXX t);
-		WeightsAndBias NumericGradient(MatrixXX m, MatrixXX t);
+		MatrixXX Loss(MatrixXX x, MatrixXX t);
+		WeightsAndBias Gradient(MatrixXX x, MatrixXX t);
+		WeightsAndBias NumericGradient(MatrixXX x, MatrixXX t);
 #else
 		// 以下は，このクラスのインスタンスをdeleteする際に，
 		// 解放対象とするメモリ領域をヒープ領域のサイズに一致させるための措置。

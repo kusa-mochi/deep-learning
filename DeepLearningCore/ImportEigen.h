@@ -8,3 +8,4 @@
 using namespace Eigen;
 typedef Matrix<WEIGHT_TYPE, -1, -1> MatrixXX;
 typedef Matrix<WEIGHT_TYPE, 1, -1> VectorXX;
+//typedef Matrix<WEIGHT_TYPE, -1, 1> VerticalVectorXX;
