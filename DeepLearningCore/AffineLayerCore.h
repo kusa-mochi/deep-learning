@@ -12,6 +12,8 @@ namespace DeepLearningCore
 		virtual MatrixXX Forward(MatrixXX x);
 		virtual MatrixXX Forward(MatrixXX x, MatrixXX y);
 		virtual LayerBackwardOutput Backward(MatrixXX dout);
+		MatrixXX dw() { return _dw; }
+		VectorXX db() { return _db; }
 	private:
 		int _numInput = 1;
 		MatrixXX* _pW = NULL;

@@ -291,8 +291,12 @@ namespace DeepLearningCore
 	}
 
 
-	void MultiLayerPerceptronCore::Gradient(MatrixXX m, MatrixXX t)
+	WeightsAndBias MultiLayerPerceptronCore::Gradient(MatrixXX m, MatrixXX t)
 	{
+		WeightsAndBias output;
+		output.weights = new MatrixXX[_numLayer];
+		output.bias = new VectorXX[_numLayer];
+
 		// 順方向の計算を行い，各層に学習に必要な情報を残す。
 		this->Loss(m, t);
 
@@ -307,5 +311,32 @@ namespace DeepLearningCore
 			backwardOutput = p->Layer->Backward(dout);
 			dout = backwardOutput.x;
 		}
+
+		int iLayer = 0;
+		for (Layer* p = _layer; p != NULL; p = p->Next)
+		{
+			if (p->LayerType != _LayerType::Affine)
+			{
+				continue;
+			}
+
+			output.weights[iLayer] = ((AffineLayerCore*)p->Layer)->dw();
+			output.bias[iLayer] = ((AffineLayerCore*)p->Layer)->db();
+
+			iLayer++;
+		}
+
+		return output;
+	}
+
+	WeightsAndBias MultiLayerPerceptronCore::NumericGradient(MatrixXX m, MatrixXX t)
+	{
+		WeightsAndBias output;
+		output.weights = new MatrixXX[_numLayer];
+		output.bias = new VectorXX[_numLayer];
+
+		// TODO
+
+		return output;
 	}
 }

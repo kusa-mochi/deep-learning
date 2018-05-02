@@ -9,6 +9,12 @@ namespace DeepLearningCore
 		MatrixXX y;
 	} LayerBackwardOutput;
 
+	typedef struct ST_WeightsAndBias
+	{
+		MatrixXX* weights;
+		VectorXX* bias;
+	} WeightsAndBias;
+
 	class ILayerCore
 	{
 	public:
