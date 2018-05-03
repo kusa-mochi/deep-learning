@@ -235,6 +235,7 @@ namespace DeepLearningCore
 		WeightsAndBias grad = this->Gradient(matrixX, matrixT);
 
 		*outputWeights = new WEIGHT_TYPE**[_numLayer];
+		*outputBias = new WEIGHT_TYPE**[_numLayer];
 		for (int iLayer = 0; iLayer < _numLayer; iLayer++)
 		{
 			this->Matrix2Pointer(grad.weights[iLayer], &(*outputWeights)[iLayer]);
@@ -255,6 +256,7 @@ namespace DeepLearningCore
 		WeightsAndBias grad = this->NumericGradient(matrixX, matrixT);
 
 		*outputWeights = new WEIGHT_TYPE**[_numLayer];
+		*outputBias = new WEIGHT_TYPE**[_numLayer];
 		for (int iLayer = 0; iLayer < _numLayer; iLayer++)
 		{
 			this->Matrix2Pointer(grad.weights[iLayer], &(*outputWeights)[iLayer]);
@@ -387,7 +389,7 @@ namespace DeepLearningCore
 		WEIGHT_TYPE justAfter = 0.0;
 		WEIGHT_TYPE tmpWeight = 0.0;
 		WEIGHT_TYPE tmpBias = 0.0;
-		WEIGHT_TYPE h = 0.000001;
+		WEIGHT_TYPE h = 0.0000000001;
 
 		for (int iLayer = 0; iLayer < _numLayer; iLayer++)
 		{

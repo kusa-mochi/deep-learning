@@ -73,5 +73,100 @@ namespace DeepLearningCoreTest
 			Assert::IsTrue(0.69627908 < coreOutput[0][1] && coreOutput[0][1] < 0.69627910);
 			Logger::WriteMessage("End SmallCaseCoreTest");
 		}
+
+		TEST_METHOD(GradientCheckTest)
+		{
+			Logger::WriteMessage("Begin GradientCheckTest");
+
+			WEIGHT_TYPE allowableError = 0.5;
+
+			LayerInfo* layerInfo = new LayerInfo[3];
+			layerInfo[0].NumNeuron = 3;
+			layerInfo[0].LayerType = _LayerType::Sigmoid;
+			layerInfo[1].NumNeuron = 2;
+			layerInfo[1].LayerType = _LayerType::Sigmoid;
+			layerInfo[2].NumNeuron = 2;
+			layerInfo[2].LayerType = _LayerType::SoftMax;
+
+			MultiLayerPerceptronCore p(
+				2,
+				3,
+				layerInfo
+			);
+
+			// d‚Ý‚ÌÝ’è
+			WEIGHT_TYPE*** weights = new WEIGHT_TYPE**[3]{
+				new WEIGHT_TYPE*[2]{
+				new WEIGHT_TYPE[3]{ 0.1, 0.3, 0.5 },
+				new WEIGHT_TYPE[3]{ 0.2, 0.4, 0.6 }
+			},
+				new WEIGHT_TYPE*[3]{
+				new WEIGHT_TYPE[2]{ 0.1, 0.4 },
+				new WEIGHT_TYPE[2]{ 0.2, 0.5 },
+				new WEIGHT_TYPE[2]{ 0.3, 0.6 }
+			},
+				new WEIGHT_TYPE*[2]{
+				new WEIGHT_TYPE[2]{ 0.1, 0.3 },
+				new WEIGHT_TYPE[2]{ 0.2, 0.4 }
+			}
+			};
+			p.SetWeights(weights);
+
+			// ƒoƒCƒAƒX‚ÌÝ’è
+			WEIGHT_TYPE** bias = new WEIGHT_TYPE*[3]{
+				new WEIGHT_TYPE[3]{ 0.1, 0.2, 0.3 },
+				new WEIGHT_TYPE[2]{ 0.1, 0.2 },
+				new WEIGHT_TYPE[2]{ 0.1, 0.2 }
+			};
+			p.SetBias(bias);
+
+			// “ü—Í‚ÌÝ’è
+			WEIGHT_TYPE** x = new WEIGHT_TYPE*[1]{
+				new WEIGHT_TYPE[2]{ 1.0, 0.5 }
+			};
+
+			// ‹³ŽtM†‚ÌÝ’è
+			WEIGHT_TYPE** t = new WEIGHT_TYPE*[1]{
+				new WEIGHT_TYPE[2]{ 0.9, 0.45 }
+			};
+
+			// ”’l”÷•ª‚ÅŒvŽZ‚µ‚½d‚Ý‚ÌŒù”z‚ðŠi”[‚·‚é•Ï”
+			WEIGHT_TYPE*** numericdW = NULL;
+			// ”’l”÷•ª‚ÅŒvŽZ‚µ‚½ƒoƒCƒAƒX‚ÌŒù”z‚ðŠi”[‚·‚é•Ï”
+			WEIGHT_TYPE*** numericdB = NULL;
+			// Œë·‹t“`”d–@‚ÅŒvŽZ‚µ‚½d‚Ý‚ÌŒù”z‚ðŠi”[‚·‚é•Ï”
+			WEIGHT_TYPE*** dW = NULL;
+			// Œë·‹t“`”d–@‚ÅŒvŽZ‚µ‚½ƒoƒCƒAƒX‚ÌŒù”z‚ðŠi”[‚·‚é•Ï”
+			WEIGHT_TYPE*** dB = NULL;
+
+			int numData = 1;
+			p.DebugNumericGradient(x, t, numData, &numericdW, &numericdB);
+			p.DebugGradient(x, t, numData, &dW, &dB);
+
+			Assert::AreEqual(p.GetNumLayer(), 3);
+			Assert::AreEqual(p.GetNumInput(), 2);
+			for (int iLayer = 0; iLayer < 3; iLayer++)
+			{
+				int rows = iLayer == 0 ? p.GetNumInput() : layerInfo[iLayer - 1].NumNeuron;
+				int cols = layerInfo[iLayer].NumNeuron;
+
+				for (int iColumn = 0; iColumn < cols; iColumn++)
+				{
+					for (int iRow = 0; iRow < rows; iRow++)
+					{
+						WEIGHT_TYPE numericGradientWeight = numericdW[iLayer][iRow][iColumn];
+						WEIGHT_TYPE gradientWeight = dW[iLayer][iRow][iColumn];
+						WEIGHT_TYPE diffdW = gradientWeight - numericGradientWeight;
+						Assert::IsTrue(-allowableError < diffdW && diffdW < allowableError, L"-allowableError < diffdW && diffdW < allowableError");
+					}
+					WEIGHT_TYPE numericGradientBias = numericdB[iLayer][0][iColumn];
+					WEIGHT_TYPE gradientBias = dB[iLayer][0][iColumn];
+					WEIGHT_TYPE diffdB = gradientBias - numericGradientBias;
+					Assert::IsTrue(-allowableError < diffdB && diffdB < allowableError, L"-allowableError < diffdB && diffdB < allowableError");
+				}
+			}
+
+			Logger::WriteMessage("End GradientCheckTest");
+		}
 	};
 }

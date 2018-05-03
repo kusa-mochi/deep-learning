@@ -34,6 +34,7 @@ namespace DeepLearningCore
 	{
 		LayerBackwardOutput output;
 
+		// TODO: 誤ってない？？テストケースが合格にならない原因はここ？
 		output.x = (_y - _t).array() / _t.rows();
 
 		return output;
@@ -47,7 +48,17 @@ namespace DeepLearningCore
 
 		// 指数関数の計算のために値が調整された行列x
 		MatrixXX adjustedX = x;
-		adjustedX.rowwise() -= maxValues;
+
+		for (int iRow = 0; iRow < adjustedX.rows(); iRow++)
+		{
+			for (int iColumn = 0; iColumn < adjustedX.cols(); iColumn++)
+			{
+				adjustedX(iRow, iColumn) -= maxValues(iRow);
+			}
+		}
+
+		//adjustedX.rowwise() -= maxValues;
+
 		//MatrixXX adjustedX = MatrixXX::Zero(x.rows(), x.cols());
 		//for (int iRow = 0; iRow < x.rows(); iRow++)
 		//{
@@ -58,11 +69,25 @@ namespace DeepLearningCore
 		//}
 		adjustedX = adjustedX.array().exp();
 
-		// 各行の合計値
-		VectorXX sums = adjustedX.rowwise().sum();
+		for (int iRow = 0; iRow < adjustedX.rows(); iRow++)
+		{
+			WEIGHT_TYPE sum = 0.0;
+			for (int iColumn = 0; iColumn < adjustedX.cols(); iColumn++)
+			{
+				sum += adjustedX(iRow, iColumn);
+			}
+			for (int iColumn = 0; iColumn < adjustedX.cols(); iColumn++)
+			{
+				adjustedX(iRow, iColumn) /= sum;
+			}
+		}
 
-		// softmax関数値を計算する。
-		adjustedX.rowwise() -= sums;
+		//// 各行の合計値
+		//VectorXX sums = adjustedX.rowwise().sum();
+
+		//// softmax関数値を計算する。
+		//adjustedX.rowwise() -= sums;
+
 		//for (int iRow = 0; iRow < x.rows(); iRow++)
 		//{
 		//	for (int iColumn = 0; iColumn < x.cols(); iColumn++)
