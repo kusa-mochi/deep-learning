@@ -57,7 +57,7 @@ namespace DeepLearningCoreTest
 
 			// ì¸óÕÇÃê›íË
 			WEIGHT_TYPE** coreInput = new WEIGHT_TYPE*[1]{
-				new WEIGHT_TYPE[2]{ 0.1, 0.5 }
+				new WEIGHT_TYPE[2]{ 1.0, 0.5 }
 			};
 
 			WEIGHT_TYPE** coreOutput = NULL;
