@@ -215,6 +215,51 @@ namespace DeepLearningCore
 		this->Matrix2Pointer(tmpMatrix, output);
 	}
 
+
+#ifdef _DEBUG
+	void MultiLayerPerceptronCore::DebugGradient(WEIGHT_TYPE** x, WEIGHT_TYPE** t, int numData, WEIGHT_TYPE**** outputWeights, WEIGHT_TYPE**** outputBias)
+	{
+		assert(x != NULL);
+		assert(t != NULL);
+		assert(numData > 0);
+		assert(*outputWeights == NULL);
+		assert(*outputBias == NULL);
+
+		MatrixXX matrixX = this->Pointer2Matrix(x, numData, this->GetNumInput());
+		MatrixXX matrixT = this->Pointer2Matrix(t, numData, this->GetNumOutput());
+
+		WeightsAndBias grad = this->Gradient(matrixX, matrixT);
+
+		*outputWeights = new WEIGHT_TYPE**[_numLayer];
+		for (int iLayer = 0; iLayer < _numLayer; iLayer++)
+		{
+			this->Matrix2Pointer(grad.weights[iLayer], &(*outputWeights)[iLayer]);
+			this->Matrix2Pointer(grad.bias[iLayer], &(*outputBias)[iLayer]);
+		}
+	}
+	void MultiLayerPerceptronCore::DebugNumericGradient(WEIGHT_TYPE** x, WEIGHT_TYPE** t, int numData, WEIGHT_TYPE**** outputWeights, WEIGHT_TYPE**** outputBias)
+	{
+		assert(x != NULL);
+		assert(t != NULL);
+		assert(numData > 0);
+		assert(*outputWeights == NULL);
+		assert(*outputBias == NULL);
+
+		MatrixXX matrixX = this->Pointer2Matrix(x, numData, this->GetNumInput());
+		MatrixXX matrixT = this->Pointer2Matrix(t, numData, this->GetNumOutput());
+
+		WeightsAndBias grad = this->NumericGradient(matrixX, matrixT);
+
+		*outputWeights = new WEIGHT_TYPE**[_numLayer];
+		for (int iLayer = 0; iLayer < _numLayer; iLayer++)
+		{
+			this->Matrix2Pointer(grad.weights[iLayer], &(*outputWeights)[iLayer]);
+			this->Matrix2Pointer(grad.bias[iLayer], &(*outputBias)[iLayer]);
+		}
+	}
+#endif
+
+
 	MatrixXX MultiLayerPerceptronCore::Pointer2Matrix(WEIGHT_TYPE** p, int rows, int cols)
 	{
 		assert(p != NULL);

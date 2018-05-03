@@ -48,6 +48,10 @@ namespace DeepLearningCore
 		void SetWeights(WEIGHT_TYPE*** weights);
 		void SetBias(WEIGHT_TYPE** bias);
 		void Predict(WEIGHT_TYPE** input, int numData, WEIGHT_TYPE*** output);
+#ifdef _DEBUG
+		void DebugGradient(WEIGHT_TYPE** x, WEIGHT_TYPE** t, int numData, WEIGHT_TYPE**** outputWeights, WEIGHT_TYPE**** outputBias);
+		void DebugNumericGradient(WEIGHT_TYPE** x, WEIGHT_TYPE** t, int numData, WEIGHT_TYPE**** outputWeights, WEIGHT_TYPE**** outputBias);
+#endif
 	private:
 		int _numLayer = 0;
 		int _numInput = 0;
@@ -93,4 +97,4 @@ namespace DeepLearningCore
 		int NumericGradient(int m, int t);
 #endif
 	};
-	}
+}
