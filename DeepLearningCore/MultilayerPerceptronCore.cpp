@@ -43,6 +43,9 @@ namespace DeepLearningCore
 		_weight = NULL;
 		delete[] _bias;
 		_bias = NULL;
+		delete _lastLayer;
+
+		// TODO: _layer‚ÌƒŠƒXƒg‚Ì‰ð•ú
 	}
 
 
@@ -128,6 +131,7 @@ namespace DeepLearningCore
 
 	void MultiLayerPerceptronCore::InitializeLastLayer()
 	{
+		_lastLayer = new Layer();
 		switch (_layerInfo[_numLayer - 1].LayerType)
 		{
 		case _LayerType::None:
