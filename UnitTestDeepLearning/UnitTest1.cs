@@ -55,11 +55,41 @@ namespace UnitTestDeepLearning
         [TestMethod]
         public void TwoDimensionalPositionTest()
         {
+            int numInput = 2;
+            int numOutput = 2;
+
             MultiLayerPerceptron p = new MultiLayerPerceptron(
-                2,
-                new int[] { 5, 3, 3 },
+                numInput,
+                new int[] { 5, 3, 2 },
                 new LayerType[] { LayerType.Sigmoid, LayerType.Sigmoid, LayerType.SoftMax }
                 );
+
+            // 学習データの個数
+            int numLearningData = 1000;
+
+            // テストデータの個数
+            int numTestData = 1000;
+
+            // 学習データを用意する。
+            double[,] learningData = new double[numLearningData, numInput];
+
+            // 教師データを用意する。
+            double[,] teachData = new double[numLearningData, numOutput];
+
+            // テストデータを用意する。
+            double[,] testData = new double[numTestData, numInput];
+
+            // テストデータに対応する答えを用意する。
+            double[,] validOutputData = new double[numTestData, numOutput];
+
+            // 学習する。
+            p.Learn(learningData, teachData, 0.3);
+
+            // 性能の確認のため，テストデータを入力してみる。
+            double[,] result = p.Predict(testData);
+
+            // テストデータ入力に対する結果resultを，
+            // 正しい答えであるvalidOutputDataに照らして評価する。
         }
     }
 }
