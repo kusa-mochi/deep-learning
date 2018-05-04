@@ -57,16 +57,6 @@ namespace DeepLearningCore
 			}
 		}
 
-		//adjustedX.rowwise() -= maxValues;
-
-		//MatrixXX adjustedX = MatrixXX::Zero(x.rows(), x.cols());
-		//for (int iRow = 0; iRow < x.rows(); iRow++)
-		//{
-		//	for (int iColumn = 0; iColumn < x.cols(); iColumn++)
-		//	{
-		//		adjustedX(iRow, iColumn) = x(iRow, iColumn) - maxValues(iRow, 0);
-		//	}
-		//}
 		adjustedX = adjustedX.array().exp();
 
 		for (int iRow = 0; iRow < adjustedX.rows(); iRow++)
@@ -82,20 +72,6 @@ namespace DeepLearningCore
 			}
 		}
 
-		//// 各行の合計値
-		//VectorXX sums = adjustedX.rowwise().sum();
-
-		//// softmax関数値を計算する。
-		//adjustedX.rowwise() -= sums;
-
-		//for (int iRow = 0; iRow < x.rows(); iRow++)
-		//{
-		//	for (int iColumn = 0; iColumn < x.cols(); iColumn++)
-		//	{
-		//		adjustedX(iRow, iColumn) = adjustedX(iRow, iColumn) - sums(iRow, 0);
-		//	}
-		//}
-
 		return adjustedX;
 	}
 
@@ -103,7 +79,7 @@ namespace DeepLearningCore
 	MatrixXX SoftmaxWithLoss::CrossEntrypyError(MatrixXX y, MatrixXX t)
 	{
 		MatrixXX output = MatrixXX::Ones(1, 1);
-		output *= -(t.array() * y.array().log().array()).sum() / y.cols();
+		output *= -(t.array() * y.array().log().array()).sum() / y.rows();
 		return output;
 	}
 }
