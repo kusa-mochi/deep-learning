@@ -78,7 +78,7 @@ namespace DeepLearningCoreTest
 		{
 			Logger::WriteMessage("Begin GradientCheckTest");
 
-			WEIGHT_TYPE allowableError = 0.5;
+			WEIGHT_TYPE allowableError = 0.01;
 
 			LayerInfo* layerInfo = new LayerInfo[3];
 			layerInfo[0].NumNeuron = 3;
@@ -121,13 +121,15 @@ namespace DeepLearningCoreTest
 			p.SetBias(bias);
 
 			// 入力の設定
-			WEIGHT_TYPE** x = new WEIGHT_TYPE*[1]{
-				new WEIGHT_TYPE[2]{ 1.0, 0.5 }
+			WEIGHT_TYPE** x = new WEIGHT_TYPE*[2]{
+				new WEIGHT_TYPE[2]{ 1.0, 0.5 },
+				new WEIGHT_TYPE[2]{ 0.8, 0.7 }
 			};
 
 			// 教師信号の設定
-			WEIGHT_TYPE** t = new WEIGHT_TYPE*[1]{
-				new WEIGHT_TYPE[2]{ 0.9, 0.45 }
+			WEIGHT_TYPE** t = new WEIGHT_TYPE*[2]{
+				new WEIGHT_TYPE[2]{ 0.9, 0.45 },
+				new WEIGHT_TYPE[2]{ 0.75, 0.3 }
 			};
 
 			// 数値微分で計算した重みの勾配を格納する変数
@@ -139,7 +141,7 @@ namespace DeepLearningCoreTest
 			// 誤差逆伝播法で計算したバイアスの勾配を格納する変数
 			WEIGHT_TYPE*** dB = NULL;
 
-			int numData = 1;
+			int numData = 2;
 			p.DebugNumericGradient(x, t, numData, &numericdW, &numericdB);
 			p.DebugGradient(x, t, numData, &dW, &dB);
 

@@ -19,7 +19,17 @@ namespace DeepLearningCore
 	MatrixXX AffineLayerCore::Forward(MatrixXX x)
 	{
 		_x = x;
-		return (x * (*_pW)) + (*_pB);
+
+		MatrixXX output = x * (*_pW);
+		for (int iRow = 0; iRow < output.rows(); iRow++)
+		{
+			for (int iColumn = 0; iColumn < output.cols(); iColumn++)
+			{
+				output(iRow, iColumn) += (*_pB)(0, iColumn);
+			}
+		}
+
+		return output;
 	}
 
 
