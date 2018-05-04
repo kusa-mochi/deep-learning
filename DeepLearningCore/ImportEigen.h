@@ -9,3 +9,9 @@ using namespace Eigen;
 typedef Matrix<WEIGHT_TYPE, -1, -1> MatrixXX;
 typedef Matrix<WEIGHT_TYPE, 1, -1> VectorXX;
 //typedef Matrix<WEIGHT_TYPE, -1, 1> VerticalVectorXX;
+
+#ifdef _DEBUG
+#define PRINT_MATRIX(m,name) (std::cout << name << std::endl << m << std::endl)
+#else
+#define PRINT_MATRIX(m,name)
+#endif

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 #define ARGUMENT_EXCEPTION 1
 #define ARGUMENT_NULL_EXCEPTION 2
 #define INVALID_OPERATION_EXCEPTION 3

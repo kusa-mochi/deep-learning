@@ -6,10 +6,10 @@
 #define DECLSPEC __declspec(dllimport)
 #endif
 
-#include <iostream>
-using namespace std;
-
 #include "CommonTypes.h"
+
+#include <iomanip>
+using namespace std;
 
 #ifdef EXPORTING_
 #include "Layer.h"

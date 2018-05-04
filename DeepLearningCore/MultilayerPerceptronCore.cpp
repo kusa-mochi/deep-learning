@@ -28,6 +28,11 @@ namespace DeepLearningCore
 			throw ARGUMENT_NULL_EXCEPTION;
 		}
 
+#ifdef _DEBUG
+		// 行列の標準出力の小数桁数を設定する。
+		std::cout << std::fixed << std::setprecision(5);
+#endif
+
 		_numInput = numInput;
 		_numLayer = numLayer;
 		_layerInfo = layerInfo;
@@ -86,7 +91,7 @@ namespace DeepLearningCore
 			// 出力層の場合
 			if (iLayer == _numLayer - 1)
 			{
-				// 次の層はないことにする。
+				// 次の層はないことにする。出力層については，別途_lastLayerで定義する。
 				p->Next = NULL;
 
 				_layerEnd = p;
