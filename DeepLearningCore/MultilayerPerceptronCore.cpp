@@ -225,6 +225,23 @@ namespace DeepLearningCore
 	}
 
 
+	void MultiLayerPerceptronCore::Learn(WEIGHT_TYPE** input, WEIGHT_TYPE** teachData, int numData, double learningRate)
+	{
+		assert(input != NULL);
+		assert(teachData != NULL);
+		assert(numData > 0);
+		assert(learningRate > 0.0);
+		if (input == NULL) { throw ARGUMENT_NULL_EXCEPTION; }
+		if (teachData == NULL) { throw ARGUMENT_NULL_EXCEPTION; }
+		if (numData < 1) { throw ARGUMENT_EXCEPTION; }
+		if (learningRate < 0.0000001) { throw ARGUMENT_EXCEPTION; }
+
+		MatrixXX inputMatrix = this->Pointer2Matrix(input, numData, this->GetNumInput());
+		MatrixXX teachMatrix = this->Pointer2Matrix(teachData, numData, this->GetNumOutput());
+		this->LearnCore(inputMatrix, teachMatrix, learningRate);
+	}
+
+
 #ifdef _DEBUG
 	void MultiLayerPerceptronCore::DebugGradient(WEIGHT_TYPE** x, WEIGHT_TYPE** t, int numData, WEIGHT_TYPE**** outputWeights, WEIGHT_TYPE**** outputBias)
 	{
@@ -330,6 +347,18 @@ namespace DeepLearningCore
 		MatrixXX output = input;
 
 		return output;
+	}
+
+
+	void MultiLayerPerceptronCore::LearnCore(MatrixXX input, MatrixXX teach, double learningRate)
+	{
+		_learningRate = learningRate;
+		WeightsAndBias grad = this->Gradient(input, teach);
+		for (int iLayer = 0; iLayer < _numLayer; iLayer++)
+		{
+			_weight[iLayer] += -grad.weights[iLayer] * learningRate;
+			_bias[iLayer] += -grad.bias[iLayer] * learningRate;
+		}
 	}
 
 
