@@ -51,5 +51,15 @@ namespace UnitTestDeepLearning
             Assert.IsTrue(0.31682707 < result[0, 0] && result[0, 0] < 0.31682709);
             Assert.IsTrue(0.69627908 < result[0, 1] && result[0, 1] < 0.69627910);
         }
+
+        [TestMethod]
+        public void TwoDimensionalPositionTest()
+        {
+            MultiLayerPerceptron p = new MultiLayerPerceptron(
+                2,
+                new int[] { 5, 3, 3 },
+                new LayerType[] { LayerType.Sigmoid, LayerType.Sigmoid, LayerType.SoftMax }
+                );
+        }
     }
 }
