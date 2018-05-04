@@ -157,6 +157,23 @@ namespace DeepLearning
 		return output;
 	}
 
+	void MultiLayerPerceptron::Learn(cli::array<WEIGHT_TYPE, 2>^ input, cli::array<WEIGHT_TYPE, 2>^ teach, double learningRate)
+	{
+		if (input == nullptr) throw gcnew System::ArgumentNullException("input");
+		if (teach == nullptr) throw gcnew System::ArgumentNullException("teach");
+		if (learningRate < 0.0) throw gcnew System::ArgumentOutOfRangeException("learningRate");
+
+		WEIGHT_TYPE** coreInput = NULL;
+		WEIGHT_TYPE** coreTeach = NULL;
+		this->ManagedArray2NativeArray(input, &coreInput);
+		System::Diagnostics::Debug::Assert(coreInput != NULL);
+		this->ManagedArray2NativeArray(teach, &coreTeach);
+		System::Diagnostics::Debug::Assert(coreTeach != NULL);
+		int numData = input->GetLength(0);
+
+		_multiLayerPerceptronCore->Learn(coreInput, coreTeach, numData, 0.3);
+	}
+
 	void MultiLayerPerceptron::ManagedArray2NativeArray(cli::array<WEIGHT_TYPE, 2>^ input, WEIGHT_TYPE*** output)
 	{
 		int inputRows = input->GetLength(0);

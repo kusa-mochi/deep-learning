@@ -20,6 +20,7 @@ namespace DeepLearning
 		void SetWeights(cli::array<cli::array<WEIGHT_TYPE, 2>^>^ weights);
 		void SetBias(cli::array<cli::array<WEIGHT_TYPE>^>^ bias);
 		cli::array<WEIGHT_TYPE, 2>^ Predict(cli::array<WEIGHT_TYPE, 2>^ input);
+		void Learn(cli::array<WEIGHT_TYPE, 2>^ input, cli::array<WEIGHT_TYPE, 2>^ teach, double learningRate);
 	private:
 		int _numInput = 0;
 		MultiLayerPerceptronCore * _multiLayerPerceptronCore = NULL;
