@@ -48,6 +48,7 @@ namespace DeepLearningCore
 		void SetWeights(WEIGHT_TYPE*** weights);
 		void SetBias(WEIGHT_TYPE** bias);
 		void Predict(WEIGHT_TYPE** input, int numData, WEIGHT_TYPE*** output);
+		WEIGHT_TYPE Loss(WEIGHT_TYPE** x, WEIGHT_TYPE** t, int numData);
 		void Learn(WEIGHT_TYPE** input, WEIGHT_TYPE** teachData, int numData, double learningRate = 0.3);
 #ifdef _DEBUG
 		void DebugGradient(WEIGHT_TYPE** x, WEIGHT_TYPE** t, int numData, WEIGHT_TYPE**** outputWeights, WEIGHT_TYPE**** outputBias);
@@ -74,7 +75,7 @@ namespace DeepLearningCore
 		MatrixXX PredictCore(MatrixXX input);
 		void LearnCore(MatrixXX input, MatrixXX teach, double learningRate);
 		MatrixXX ApplyLastLayer(MatrixXX m, MatrixXX t);
-		MatrixXX Loss(MatrixXX x, MatrixXX t);
+		MatrixXX LossCore(MatrixXX x, MatrixXX t);
 		WeightsAndBias Gradient(MatrixXX x, MatrixXX t);
 		WeightsAndBias NumericGradient(MatrixXX x, MatrixXX t);
 #else
@@ -96,7 +97,7 @@ namespace DeepLearningCore
 		int PredictCore(int input);
 		void LearnCore(int input, int teach);
 		int ApplyLastLayer(int m, int t);
-		int Loss(int m, int t);
+		int LossCore(int m, int t);
 		int Gradient(int m, int t);
 		int NumericGradient(int m, int t);
 #endif

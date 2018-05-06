@@ -225,6 +225,24 @@ namespace DeepLearningCore
 	}
 
 
+	WEIGHT_TYPE MultiLayerPerceptronCore::Loss(WEIGHT_TYPE** x, WEIGHT_TYPE** t, int numData)
+	{
+		assert(x != NULL);
+		assert(t != NULL);
+		assert(numData >= 1);
+		if (x == NULL) { throw ARGUMENT_NULL_EXCEPTION; }
+		if (t == NULL) { throw ARGUMENT_NULL_EXCEPTION; }
+		if (numData < 1) { throw ARGUMENT_EXCEPTION; }
+
+		MatrixXX matrixX = this->Pointer2Matrix(x, numData, this->GetNumInput());
+		MatrixXX matrixT = this->Pointer2Matrix(t, numData, this->GetNumOutput());
+
+		MatrixXX matrixLoss = this->LossCore(matrixX, matrixT);
+
+		return matrixLoss(0, 0);
+	}
+
+
 	void MultiLayerPerceptronCore::Learn(WEIGHT_TYPE** input, WEIGHT_TYPE** teachData, int numData, double learningRate)
 	{
 		assert(input != NULL);
@@ -368,7 +386,7 @@ namespace DeepLearningCore
 	}
 
 
-	MatrixXX MultiLayerPerceptronCore::Loss(MatrixXX x, MatrixXX t)
+	MatrixXX MultiLayerPerceptronCore::LossCore(MatrixXX x, MatrixXX t)
 	{
 		MatrixXX y = this->PredictCore(x);
 		MatrixXX output = this->ApplyLastLayer(y, t);
@@ -383,7 +401,7 @@ namespace DeepLearningCore
 		output.bias = new VectorXX[_numLayer];
 
 		// 順方向の計算を行い，各層に学習に必要な情報を残す。
-		this->Loss(x, t);
+		this->LossCore(x, t);
 
 		// 出力層
 		LayerBackwardOutput backwardOutput = _lastLayer->Layer->Backward(MatrixXX::Ones(1, 1));
@@ -423,7 +441,7 @@ namespace DeepLearningCore
 		WEIGHT_TYPE justAfter = 0.0;
 		WEIGHT_TYPE tmpWeight = 0.0;
 		WEIGHT_TYPE tmpBias = 0.0;
-		WEIGHT_TYPE h = 0.0000000001;
+		WEIGHT_TYPE h = 0.00001;
 
 		for (int iLayer = 0; iLayer < _numLayer; iLayer++)
 		{
@@ -438,10 +456,10 @@ namespace DeepLearningCore
 					tmpWeight = _weight[iLayer](iRow, iColumn);
 
 					_weight[iLayer](iRow, iColumn) = tmpWeight - h;
-					justBefore = this->Loss(x, t)(0, 0);
+					justBefore = this->LossCore(x, t)(0, 0);
 
 					_weight[iLayer](iRow, iColumn) = tmpWeight + h;
-					justAfter = this->Loss(x, t)(0, 0);
+					justAfter = this->LossCore(x, t)(0, 0);
 
 					output.weights[iLayer](iRow, iColumn) = (justAfter - justBefore) / (2 * h);
 
@@ -453,10 +471,10 @@ namespace DeepLearningCore
 				tmpBias = _bias[iLayer](iColumn);
 
 				_bias[iLayer](iColumn) = tmpBias - h;
-				justBefore = this->Loss(x, t)(0, 0);
+				justBefore = this->LossCore(x, t)(0, 0);
 
 				_bias[iLayer](iColumn) = tmpBias + h;
-				justBefore = this->Loss(x, t)(0, 0);
+				justBefore = this->LossCore(x, t)(0, 0);
 
 				output.bias[iLayer](iColumn) = (justAfter - justBefore) / (2 * h);
 

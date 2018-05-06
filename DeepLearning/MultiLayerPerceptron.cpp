@@ -157,6 +157,11 @@ namespace DeepLearning
 		return output;
 	}
 
+	WEIGHT_TYPE MultiLayerPerceptron::Loss(cli::array<WEIGHT_TYPE, 2>^ x, cli::array<WEIGHT_TYPE, 2>^ t)
+	{
+		// TODO
+	}
+
 	void MultiLayerPerceptron::Learn(cli::array<WEIGHT_TYPE, 2>^ input, cli::array<WEIGHT_TYPE, 2>^ teach, double learningRate)
 	{
 		if (input == nullptr) throw gcnew System::ArgumentNullException("input");

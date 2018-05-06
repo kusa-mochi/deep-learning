@@ -78,7 +78,7 @@ namespace DeepLearningCoreTest
 		{
 			Logger::WriteMessage("Begin GradientCheckTest");
 
-			WEIGHT_TYPE allowableError = 0.01;
+			WEIGHT_TYPE allowableError = 0.1;
 
 			LayerInfo* layerInfo = new LayerInfo[3];
 			layerInfo[0].NumNeuron = 3;

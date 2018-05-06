@@ -60,36 +60,128 @@ namespace UnitTestDeepLearning
 
             MultiLayerPerceptron p = new MultiLayerPerceptron(
                 numInput,
-                new int[] { 5, 3, 2 },
+                new int[] { 3, 2, numOutput },
                 new LayerType[] { LayerType.Sigmoid, LayerType.Sigmoid, LayerType.SoftMax }
                 );
 
-            // 学習データの個数
-            int numLearningData = 1000;
+            // 学習データのバッチサイズ
+            int numLearningData = 100;
+
+            // ミニバッチ学習の回数
+            int numBatch = 10000;
 
             // テストデータの個数
-            int numTestData = 1000;
+            int numTestData = 100;
 
-            // 学習データを用意する。
-            double[,] learningData = new double[numLearningData, numInput];
+            // 精度
+            double[] accuracy = new double[numBatch];
 
-            // 教師データを用意する。
-            double[,] teachData = new double[numLearningData, numOutput];
+            // 損失
+            double[] loss = new double[numBatch];
 
-            // テストデータを用意する。
-            double[,] testData = new double[numTestData, numInput];
+            Random rnd = new Random(DateTime.Now.Millisecond);
 
-            // テストデータに対応する答えを用意する。
-            double[,] validOutputData = new double[numTestData, numOutput];
+            for (int iBatch = 0; iBatch < numBatch; iBatch++)
+            {
+                // 学習データ
+                double[,] learningData = new double[numLearningData, numInput];
+                // 教師データ
+                double[,] teachData = new double[numLearningData, numOutput];
+                for (int iData = 0; iData < numLearningData; iData++)
+                {
+                    // 0～1の間
+                    learningData[iData, 0] = rnd.NextDouble();
+                    learningData[iData, 1] = rnd.NextDouble();
 
-            // 学習する。
-            p.Learn(learningData, teachData, 0.3);
+                    if ((learningData[iData, 0] * learningData[iData, 0]) + (learningData[iData, 1] * learningData[iData, 1]) < 0.25)
+                    {
+                        teachData[iData, 0] = 0.0;
+                        teachData[iData, 1] = 1.0;
+                    }
+                    else
+                    {
+                        teachData[iData, 0] = 1.0;
+                        teachData[iData, 1] = 0.0;
+                    }
+                }
 
-            // 性能の確認のため，テストデータを入力してみる。
-            double[,] result = p.Predict(testData);
+                // テストデータ
+                double[,] testData = new double[numTestData, numInput];
+                // テストデータに対応する答え
+                double[,] validOutputData = new double[numTestData, numOutput];
+                for (int iData = 0; iData < numTestData; iData++)
+                {
+                    // 0～1の間
+                    testData[iData, 0] = rnd.NextDouble();
+                    testData[iData, 1] = rnd.NextDouble();
 
-            // テストデータ入力に対する結果resultを，
-            // 正しい答えであるvalidOutputDataに照らして評価する。
+                    if ((testData[iData, 0] * testData[iData, 0]) + (testData[iData, 1] * testData[iData, 1]) < 0.25)
+                    {
+                        validOutputData[iData, 0] = 0.0;
+                        validOutputData[iData, 1] = 1.0;
+                    }
+                    else
+                    {
+                        validOutputData[iData, 0] = 1.0;
+                        validOutputData[iData, 1] = 0.0;
+                    }
+                }
+
+                // 学習する。
+                p.Learn(learningData, teachData, 0.1);
+
+                // 性能の確認のため，テストデータを入力してみる。
+                double[,] result = p.Predict(testData);
+
+                //int[] bunrui = new int[numTestData];
+
+                // テストデータ入力に対する結果resultを，
+                // 正しい答えであるvalidOutputDataに照らして評価する。
+                int numCorrect = 0; // 正解数
+                TestUtilities util = new TestUtilities();
+                for (int iData = 0; iData < numTestData; iData++)
+                {
+                    if (
+                        util.IsEqualDouble(result[iData, 0], validOutputData[iData, 0]) &&
+                        util.IsEqualDouble(result[iData, 1], validOutputData[iData, 1])
+                        )
+                    {
+                        // 正解
+                        numCorrect++;
+                    }
+
+                    //if (util.Double2Bool(result[iData, 0]) && !util.Double2Bool(result[iData, 1]))
+                    //{
+                    //    bunrui[iData] = 1;
+                    //}
+                    //else if (!util.Double2Bool(result[iData, 0]) && util.Double2Bool(result[iData, 1]))
+                    //{
+                    //    bunrui[iData] = 0;
+                    //}
+                    //else
+                    //{
+                    //    bunrui[iData] = 2;
+                    //}
+                }
+                accuracy[iBatch] = 100.0 * numCorrect / numTestData;
+
+                Console.WriteLine("batch: {0}/{1}", iBatch + 1, numBatch);
+
+                if (iBatch == numBatch - 1)
+                {
+                    Console.WriteLine("class1,class2,正解1,正解2");
+                    for (int iData = 0; iData < numTestData; iData++)
+                    {
+                        Console.WriteLine("{0},{1},{2},{3}", result[iData, 0], result[iData, 1], validOutputData[iData, 0], validOutputData[iData, 1]);
+                    }
+                }
+            }
+
+            //// 精度の変化を標準出力する。
+            //for (int iBatch = 0; iBatch < numBatch; iBatch++)
+            //{
+            //    Console.WriteLine("{0} {1}", iBatch, accuracy[iBatch]);
+            //}
         }
     }
 }
