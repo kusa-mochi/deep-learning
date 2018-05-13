@@ -15,6 +15,8 @@ namespace DeepLearningCore
 
 		_pW = pW;
 		_pB = pB;
+		_dw = MatrixXX::Zero((*_pW).rows(), (*_pW).cols());
+		_db = MatrixXX::Zero((*_pB).rows(), (*_pB).cols());
 	}
 
 
