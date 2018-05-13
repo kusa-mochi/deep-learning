@@ -1,5 +1,15 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
+#include "TestUtility.h"
+
+#include "IdentityLayerCore.h"
+#include "AddLayerCore.h"
+#include "MulLayerCore.h"
+#include "AffineLayerCore.h"
+#include "SigmoidLayerCore.h"
+#include "ReLULayerCore.h"
+#include "SoftmaxWithLoss.h"
+
 #include "MultiLayerPerceptronCore.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -74,11 +84,40 @@ namespace DeepLearningCoreTest
 			Logger::WriteMessage("End SmallCaseCoreTest");
 		}
 
+		TEST_METHOD(SigmoidLayerForwardTest)
+		{
+			//SigmoidLayerCore layer;
+			//MatrixXX a = Matrix<WEIGHT_TYPE, 5, 3>();
+			//a <<
+			//	1.0, 2.0, 3.0,
+			//	4.0, 5.0, 6.0,
+			//	7.0, 8.0, 9.0,
+			//	10.0, 11.0, 12.0,
+			//	13.0, 14.0, 15.0;
+			//MatrixXX result = layer.Forward(a);
+
+			//TestUtility util;
+			//Assert::IsTrue(util.AreEqual(util.Sigmoid(a(0, 0)), result(0, 0)));
+			//Assert::IsTrue(util.AreEqual(util.Sigmoid(a(0, 1)), result(0, 1)));
+			//Assert::IsTrue(util.AreEqual(util.Sigmoid(a(0, 2)), result(0, 2)));
+			//Assert::IsTrue(util.AreEqual(util.Sigmoid(a(1, 0)), result(1, 0)));
+			//Assert::IsTrue(util.AreEqual(util.Sigmoid(a(1, 1)), result(1, 1)));
+			//Assert::IsTrue(util.AreEqual(util.Sigmoid(a(1, 2)), result(1, 2)));
+			//Assert::IsTrue(util.AreEqual(util.Sigmoid(a(2, 0)), result(2, 0)));
+			//Assert::IsTrue(util.AreEqual(util.Sigmoid(a(2, 1)), result(2, 1)));
+			//Assert::IsTrue(util.AreEqual(util.Sigmoid(a(2, 2)), result(2, 2)));
+			//Assert::IsTrue(util.AreEqual(util.Sigmoid(a(3, 0)), result(3, 0)));
+			//Assert::IsTrue(util.AreEqual(util.Sigmoid(a(3, 1)), result(3, 1)));
+			//Assert::IsTrue(util.AreEqual(util.Sigmoid(a(3, 2)), result(3, 2)));
+			//Assert::IsTrue(util.AreEqual(util.Sigmoid(a(4, 0)), result(4, 0)));
+			//Assert::IsTrue(util.AreEqual(util.Sigmoid(a(4, 1)), result(4, 1)));
+			//Assert::IsTrue(util.AreEqual(util.Sigmoid(a(4, 2)), result(4, 2)));
+		}
+
 		TEST_METHOD(GradientCheckTest)
 		{
 			Logger::WriteMessage("Begin GradientCheckTest");
-
-			WEIGHT_TYPE allowableError = 0.1;
+			TestUtility util;
 
 			LayerInfo* layerInfo = new LayerInfo[3];
 			layerInfo[0].NumNeuron = 3;
@@ -88,11 +127,7 @@ namespace DeepLearningCoreTest
 			layerInfo[2].NumNeuron = 2;
 			layerInfo[2].LayerType = _LayerType::SoftMax;
 
-			MultiLayerPerceptronCore p(
-				2,
-				3,
-				layerInfo
-			);
+			MultiLayerPerceptronCore p(2, 3, layerInfo), q(2, 3, layerInfo);
 
 			// 重みの設定
 			WEIGHT_TYPE*** weights = new WEIGHT_TYPE**[3]{
@@ -111,6 +146,7 @@ namespace DeepLearningCoreTest
 			}
 			};
 			p.SetWeights(weights);
+			q.SetWeights(weights);
 
 			// バイアスの設定
 			WEIGHT_TYPE** bias = new WEIGHT_TYPE*[3]{
@@ -119,6 +155,7 @@ namespace DeepLearningCoreTest
 				new WEIGHT_TYPE[2]{ 0.1, 0.2 }
 			};
 			p.SetBias(bias);
+			q.SetBias(bias);
 
 			// 入力の設定
 			WEIGHT_TYPE** x = new WEIGHT_TYPE*[2]{
@@ -143,7 +180,7 @@ namespace DeepLearningCoreTest
 
 			int numData = 2;
 			p.DebugNumericGradient(x, t, numData, &numericdW, &numericdB);
-			p.DebugGradient(x, t, numData, &dW, &dB);
+			q.DebugGradient(x, t, numData, &dW, &dB);
 
 			Assert::AreEqual(p.GetNumLayer(), 3);
 			Assert::AreEqual(p.GetNumInput(), 2);
@@ -158,13 +195,11 @@ namespace DeepLearningCoreTest
 					{
 						WEIGHT_TYPE numericGradientWeight = numericdW[iLayer][iRow][iColumn];
 						WEIGHT_TYPE gradientWeight = dW[iLayer][iRow][iColumn];
-						WEIGHT_TYPE diffdW = gradientWeight - numericGradientWeight;
-						Assert::IsTrue(-allowableError < diffdW && diffdW < allowableError, L"-allowableError < diffdW && diffdW < allowableError");
+						Assert::IsTrue(util.AreEqual(numericGradientWeight, gradientWeight), L"util.AreEqual(numericGradientWeight, gradientWeight)");
 					}
 					WEIGHT_TYPE numericGradientBias = numericdB[iLayer][0][iColumn];
 					WEIGHT_TYPE gradientBias = dB[iLayer][0][iColumn];
-					WEIGHT_TYPE diffdB = gradientBias - numericGradientBias;
-					Assert::IsTrue(-allowableError < diffdB && diffdB < allowableError, L"-allowableError < diffdB && diffdB < allowableError");
+					Assert::IsTrue(util.AreEqual(numericGradientBias, gradientBias), L"util.AreEqual(numericGradientBias, gradientBias)");
 				}
 			}
 
