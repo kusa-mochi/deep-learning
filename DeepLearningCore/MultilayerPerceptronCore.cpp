@@ -374,8 +374,8 @@ namespace DeepLearningCore
 		WeightsAndBias grad = this->Gradient(input, teach);
 		for (int iLayer = 0; iLayer < _numLayer; iLayer++)
 		{
-			_weight[iLayer] += -grad.weights[iLayer] * learningRate;
-			_bias[iLayer] += -grad.bias[iLayer] * learningRate;
+			_weight[iLayer] -= grad.weights[iLayer] * learningRate;
+			_bias[iLayer] -= grad.bias[iLayer] * learningRate;
 		}
 	}
 
