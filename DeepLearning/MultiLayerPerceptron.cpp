@@ -160,6 +160,7 @@ namespace DeepLearning
 	WEIGHT_TYPE MultiLayerPerceptron::Loss(cli::array<WEIGHT_TYPE, 2>^ x, cli::array<WEIGHT_TYPE, 2>^ t)
 	{
 		// TODO
+		return 0.0;
 	}
 
 	void MultiLayerPerceptron::Learn(cli::array<WEIGHT_TYPE, 2>^ input, cli::array<WEIGHT_TYPE, 2>^ teach, double learningRate)
